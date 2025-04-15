@@ -60,6 +60,7 @@ namespace Microsoft.AspNetCore.Builder
             var authenticationOptions = app.ApplicationServices
                 .GetService<SilkierQuartzAuthenticationOptions>() ;
 
+            app.UsePathBase(options.BasePath);
             app.UseFileServer(options);
             if (options.Scheduler == null)
             {
