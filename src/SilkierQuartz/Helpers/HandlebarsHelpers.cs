@@ -18,11 +18,25 @@ namespace SilkierQuartz.Helpers
     {
         Services _services;
         private readonly SilkierQuartzAuthenticationOptions authenticationOptions;
+        private readonly string baseUrl;
 
         public HandlebarsHelpers(Services services, SilkierQuartzAuthenticationOptions authenticationOptions)
         {
             _services = services;
             this.authenticationOptions = authenticationOptions;
+
+            var url = "/";
+            url += _services.Options.BasePath.Trim('/');
+            if (!url.EndsWith('/'))
+            {
+                url += '/';
+            }
+            url += _services.Options.VirtualPathRoot.Trim('/');
+            if (!url.EndsWith('/'))
+            {
+                url += '/';
+            }
+            baseUrl = url;
         }
 
         public static void Register(Services services, SilkierQuartzAuthenticationOptions authenticationOptions)
@@ -70,16 +84,7 @@ namespace SilkierQuartz.Helpers
 
         string UrlEncode(string value) => HttpUtility.UrlEncode(value);
 
-        string BaseUrl
-        {
-            get
-            {
-                var url = _services.Options.VirtualPathRoot;
-                if (!url.EndsWith("/"))
-                    url += "/";
-                return url;
-            }
-        }
+        string BaseUrl => this.baseUrl;
 
         private string AddQueryString(string uri, IEnumerable<KeyValuePair<string, object>> queryString)
         {

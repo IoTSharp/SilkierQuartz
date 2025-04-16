@@ -19,6 +19,7 @@ namespace SilkierQuartz
         public string ProductName { get; set; } = "";
 
         public string VirtualPathRoot { get; set; } = "/";
+        public string BasePath { get; set; } = "/";
         public string VirtualPathRootUrlEncode => VirtualPathRoot.Replace("/", "%2F");
 
         public IScheduler Scheduler { get; set; }
