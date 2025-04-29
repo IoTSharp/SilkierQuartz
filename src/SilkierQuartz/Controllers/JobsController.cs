@@ -44,6 +44,8 @@ namespace SilkierQuartz.Controllers
 
             ViewBag.Groups = (await Scheduler.GetJobGroupNames()).GroupArray();
 
+            ViewBag.EnableEdit = EnableEdit;
+
             return View(list);
         }
 
@@ -126,6 +128,8 @@ namespace SilkierQuartz.Controllers
                 jobModel.JobName += " - Copy";
 
             jobDataMap.Items.AddRange(job.GetJobDataMapModel(Services));
+
+            ViewBag.EnableEdit = EnableEdit;
 
             return View("Edit", new JobViewModel() { Job = jobModel, DataMap = jobDataMap });
         }

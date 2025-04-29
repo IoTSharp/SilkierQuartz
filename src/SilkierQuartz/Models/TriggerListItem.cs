@@ -69,5 +69,6 @@ namespace SilkierQuartz.Models
             }
         }
 
+        public bool EnableEdit { get; set; }
     }
 }

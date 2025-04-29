@@ -76,6 +76,8 @@ namespace SilkierQuartz.Helpers
             h.RegisterHelper(nameof(SilkierQuartzVersion), SilkierQuartzVersion);
             h.RegisterHelper(nameof(Logo), Logo);
             h.RegisterHelper(nameof(ProductName), ProductName);
+            h.RegisterHelper(nameof(CustomStyleSheet), CustomStyleSheet);
+            h.RegisterHelper(nameof(CustomFavicon), CustomFavicon);
         }
 
         static bool IsTrue(object value) => value?.ToString()?.Equals("true", StringComparison.OrdinalIgnoreCase) == true;
@@ -283,6 +285,14 @@ namespace SilkierQuartz.Helpers
         void ProductName(TextWriter output, dynamic context, params object[] arguments)
         {
             output.Write(_services.Options.ProductName);
+        }
+        void CustomStyleSheet(TextWriter output, dynamic context, params object[] arguments)
+        {
+            output.Write(_services.Options.CustomStyleSheet);
+        }
+        void CustomFavicon(TextWriter output, dynamic context, params object[] arguments)
+        {
+            output.Write(_services.Options.CustomFavicon);
         }
     }
 }

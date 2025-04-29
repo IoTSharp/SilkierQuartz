@@ -21,10 +21,11 @@
         {{/each}}
     </div>
 </div>
+{{#if ViewBag.EnableEdit }}
 <a class="ui right floated primary button" href="{{ActionUrl 'New'}}">
     <i class="plus icon"></i>New
 </a>
-
+{{/if}}
 <div id="msg-panel"></div>
 
 <table class="ui single line table highlight-rows" id="job-list">
@@ -64,10 +65,14 @@
 
 <div style="display:none">
     <div class="ui small vertical menu borderless" id="job-context-menu">
+        {{#if ViewBag.EnableEdit }}
         <a class="item menu-edit"><i class="left large blue pencil alternate icon"></i>Edit</a>
         <a class="item menu-copy"><i class="left large clone outline icon"></i>Copy</a>
+        {{/if}}
         <a class="item menu-trigger"><i class="left large green play icon"></i>Trigger</a>
+        {{#if ViewBag.EnableEdit }}
         <a class="item menu-delete"><i class="left large red trash alternate outline icon"></i>Delete</a>
+        {{/if}}
     </div>
 </div>
 

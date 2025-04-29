@@ -26,6 +26,8 @@ namespace SilkierQuartz.Controllers
                 list.Add(new CalendarListItem() { Name = name, Description = cal.Description, Type = cal.GetType() });
             }
 
+            ViewBag.EnableEdit = EnableEdit;
+
             return View(list);
         }
 

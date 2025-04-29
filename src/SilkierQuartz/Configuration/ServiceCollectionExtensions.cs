@@ -15,7 +15,6 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddQuartzmin(this IServiceCollection services, Action<NameValueCollection> stdSchedulerFactoryOptions = null)
             => services.AddSilkierQuartz(stdSchedulerFactoryOptions: stdSchedulerFactoryOptions);
 
-
         public static IServiceCollection AddSilkierQuartz(
             this IServiceCollection services,
             Action<SilkierQuartzOptions> configureOptions = null,
@@ -30,11 +29,8 @@ namespace Microsoft.Extensions.DependencyInjection
             var authenticationOptions = new SilkierQuartzAuthenticationOptions();
             configureAuthenticationOptions?.Invoke(authenticationOptions);
 
-         
-
-
-                services.AddSingleton(authenticationOptions);
-         if (authenticationOptions.AccessRequirement != SilkierQuartzAuthenticationOptions.SimpleAccessRequirement.AllowAnonymous)
+            services.AddSingleton(authenticationOptions);
+            if (authenticationOptions.AccessRequirement != SilkierQuartzAuthenticationOptions.SimpleAccessRequirement.AllowAnonymous)
             {
                 services
                     .AddAuthentication(authenticationOptions.AuthScheme)
@@ -54,8 +50,8 @@ namespace Microsoft.Extensions.DependencyInjection
                         builder.AddRequirements(new SilkierQuartzDefaultAuthorizationRequirement(authenticationOptions.AccessRequirement));
                     });
                 });
-                services.AddScoped<IAuthorizationHandler, SilkierQuartzDefaultAuthorizationHandler>();
-        
+            services.AddScoped<IAuthorizationHandler, SilkierQuartzDefaultAuthorizationHandler>();
+
 
             services.UseQuartzHostedService(stdSchedulerFactoryOptions);
 
@@ -63,7 +59,7 @@ namespace Microsoft.Extensions.DependencyInjection
             types.ForEach(t =>
             {
                 var so = t.GetCustomAttribute<SilkierQuartzAttribute>();
-                services.AddQuartzJob(t, so.Identity ?? t.Name, so.Desciption ?? t.FullName);
+                services.AddQuartzJob(t, so.Identity ?? t.Name, so.Group, so.Desciption ?? t.FullName);
             });
             return services;
         }

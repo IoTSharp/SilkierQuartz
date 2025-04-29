@@ -64,7 +64,7 @@ namespace SilkierQuartz.Controllers
                     FinishedTimeUtc = h.FinishedTimeUtc?.ToDefaultFormat(),
                     Duration = (endTime - h.ActualFireTimeUtc)?.ToString("hh\\:mm\\:ss"),
                     State = state,
-                    StateIcon = icon,
+                    StateIcon = icon
                 });
             }
 

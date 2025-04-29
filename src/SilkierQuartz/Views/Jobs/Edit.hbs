@@ -1,13 +1,18 @@
 ﻿{{!<Layout}}
-{{#if Model.Job.IsNew}}
-    {{ViewBag Title='Add Job'}}
+{{#if ViewBag.EnableEdit}}
+    {{#if Model.Job.IsNew}}
+        {{ViewBag Title='Add Job'}}
+    {{else}}
+        {{ViewBag Title='Edit Job'}}
+    {{/if}}
 {{else}}
-    {{ViewBag Title='Edit Job'}}
+    {{ViewBag Title='Job Details'}}
 {{/if}}
 
 <div class="ui inverted page dimmer" id="dimmer"><div class="ui loader"></div></div>
 <form class="ui form" id="form" method="post" enctype="multipart/form-data">
     <div class="ui clearing basic segment" style="padding: 0px" id="header">
+        {{#if ViewBag.EnableEdit}}
         <div style="float: right">
             <a class="ui button" id="btn-discard" href="{{ActionUrl ''}}">Discard Changes</a>
             {{#unless Model.Job.IsNew}}
@@ -23,8 +28,13 @@
                 </div>
             </div>
         </div>
+        {{/if}}
         <h1 class="ui left floated header">
-            {{#if Model.Job.IsNew}}Add Job{{else}}Edit Job "{{Model.Job.JobName}}"{{/if}}
+            {{#if ViewBag.EnableEdit}}
+                {{#if Model.Job.IsNew}}Add Job{{else}}Edit Job "{{Model.Job.JobName}}"{{/if}}
+            {{else}}
+                Job "{{Model.Job.JobName}}"
+            {{/if}}
         </h1>
     </div>
 
@@ -90,7 +100,7 @@
                     </div>
                 </div>
             </div>
-            
+
         </div>
         {{/with}}
         <h3 class="ui dividing header">Job Data Map</h3>

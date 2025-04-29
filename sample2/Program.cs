@@ -26,12 +26,16 @@ services.AddSilkierQuartz(options =>
 {
     options.VirtualPathRoot = "/quartz";
     options.UseLocalTime = true;
+    options.CustomStyleSheet = "customcss/silkierquartz.custom.css";
+    options.CustomFavicon = "customfavicon/favicon.ico";
+
     options.DefaultDateFormat = "yyyy-MM-dd";
     options.DefaultTimeFormat = "HH:mm:ss";
     options.CronExpressionOptions = new CronExpressionDescriptor.Options()
     {
         DayOfWeekStartIndexZero = false //Quartz uses 1-7 as the range
     };
+    options.EnableEdit = false;
 }
 #if ENABLE_AUTH
             ,
@@ -55,11 +59,11 @@ services.AddSilkierQuartz(options =>
 services.AddOptions();
 services.Configure<AppSettings>(configuration);
 services.Configure<InjectProperty>(options => { options.WriteText = "This is inject string"; });
-services.AddQuartzJob<HelloJob>()
-        .AddQuartzJob<InjectSampleJob>()
-        .AddQuartzJob<HelloJobSingle>()
-        .AddQuartzJob<InjectSampleJobSingle>()
-        .AddQuartzJob<LongRunningJob>();
+services.AddQuartzJob<HelloJob>(nameof(HelloJob), "sample")
+        .AddQuartzJob<InjectSampleJob>(nameof(InjectSampleJob), "sample")
+        .AddQuartzJob<HelloJobSingle>(nameof(HelloJobSingle), "sample")
+        .AddQuartzJob<InjectSampleJobSingle>(nameof(InjectSampleJobSingle), "sample")
+        .AddQuartzJob<LongRunningJob>(nameof(LongRunningJob), "sample");
 
 
 var app = builder.Build();
@@ -78,6 +82,18 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    RequestPath = "/quartz/customcss",
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider($@"{Directory.GetCurrentDirectory()}\wwwroot\css")
+});
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    RequestPath = "/quartz/customfavicon",
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider($@"{Directory.GetCurrentDirectory()}\wwwroot")
+});
 
 app.UseRouting();
 

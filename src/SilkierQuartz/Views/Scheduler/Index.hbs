@@ -42,7 +42,7 @@
 
 
     <div class="ui stackable grid">
-        <div class="seven wide column" style="padding-right: 14px !important">
+        <div class="{{#if EnableEdit}}seven {{/if}}wide column" style="padding-right: 14px !important">
             <h3 class="ui dividing header">Status</h3>
             <table class="ui table">
                 <tbody>
@@ -51,7 +51,7 @@
                         <td>{{Upper MetaData.InStandbyMode}}</td>
                     </tr>
                     <tr>
-                       <td>Running Since</td>
+                        <td>Running Since</td>
                         <td>{{RunningSince}} {{UtcLabel}}</td>
                     </tr>
                     <tr>
@@ -65,7 +65,8 @@
                 </tbody>
             </table>
         </div>
-        <div class="nine wide column" id="col-actions">
+        {{#if EnableEdit}}
+        <div class="{{#if EnableEdit}}nine {{/if}}wide column" id="col-actions">
             <h3 class="ui dividing header">Actions</h3>
 
             <p style="margin-top: 1em">
@@ -83,6 +84,8 @@
             {{>GroupActions items=TriggerGroups id='trigger-groups' header='Trigger Groups'}}
 
         </div>
+
+        {{/if}}
     </div>
 
     <h3 class="ui dividing header">Node Info</h3>

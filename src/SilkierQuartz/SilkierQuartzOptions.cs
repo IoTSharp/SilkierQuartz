@@ -16,10 +16,16 @@ namespace SilkierQuartz
         /// </summary>
         public string Logo { get; set; } = "Content/Images/logo.png";
 
+        public string CustomStyleSheet { set; get; } = "";
+
+        public string CustomFavicon { set; get; } = "";
+
         public string ProductName { get; set; } = "";
 
         public string VirtualPathRoot { get; set; } = "/";
+
         public string BasePath { get; set; } = "/";
+
         public string VirtualPathRootUrlEncode => VirtualPathRoot.Replace("/", "%2F");
 
         public IScheduler Scheduler { get; set; }
@@ -75,7 +81,7 @@ namespace SilkierQuartz
             StandardTypes.Add(new StringHandler() { Name = "MultilineString", DisplayName = "String (Multiline)", IsMultiline = true });
         }
 
-        public bool EnableEditor {get;set;} =true;
+        public bool EnableEdit { get; set; } = true;
 
         internal string ContentRootDirectory => null;
         internal string ViewsRootDirectory => null;

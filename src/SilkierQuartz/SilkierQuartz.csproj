@@ -88,7 +88,7 @@
 	<ItemGroup>
 		<PackageReference Include="Handlebars.Net" Version="1.11.5" />
 		<PackageReference Include="JsonSubTypes" Version="2.0.1" />
-		<PackageReference Include="Quartz" Version="3.13.0" />
+		<PackageReference Include="Quartz" Version="3.14.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'net9'">

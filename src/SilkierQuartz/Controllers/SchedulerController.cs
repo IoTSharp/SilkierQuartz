@@ -81,6 +81,7 @@ namespace SilkierQuartz.Controllers
                 JobGroups = pausedJobGroups,
                 TriggerGroups = pausedTriggerGroups,
                 HistoryEnabled = histStore != null,
+                EnableEdit = EnableEdit
             });
         }
 

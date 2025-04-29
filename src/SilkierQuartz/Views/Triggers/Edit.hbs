@@ -1,13 +1,18 @@
 ﻿{{!<Layout}}
-{{#if Model.Trigger.IsNew}}
-    {{ViewBag Title='Add Trigger'}}
+{{#if ViewBag.EnableEdit}}
+    {{#if Model.Trigger.IsNew}}
+        {{ViewBag Title='Add Trigger'}}
+    {{else}}
+        {{ViewBag Title='Edit Trigger'}}
+    {{/if}}
 {{else}}
-    {{ViewBag Title='Edit Trigger'}}
+    {{ViewBag Title='Trigger Details'}}
 {{/if}}
 
 <div class="ui inverted page dimmer" id="dimmer"><div class="ui loader"></div></div>
 <form class="ui form" id="form" method="post" enctype="multipart/form-data">
     <div class="ui clearing basic segment" style="padding: 0px" id="header">
+        {{#if ViewBag.EnableEdit}}
         <div style="float: right">
             <a class="ui button" id="btn-discard" href="{{ActionUrl ''}}">Discard Changes</a>
             {{#unless Model.Trigger.IsNew}}
@@ -15,8 +20,13 @@
             {{/unless}}
             <div class="ui primary button" id="btn-save">Save</div>
         </div>
+        {{/if}}
         <h1 class="ui left floated header">
+            {{#if ViewBag.EnableEdit}}
             {{#if Model.Trigger.IsNew}}Add Trigger{{else}}Edit Trigger "{{Model.Trigger.TriggerName}}"{{/if}}
+            {{else}}
+            Trigger "{{Model.Trigger.TriggerName}}"
+            {{/if}}
         </h1>
     </div>
 

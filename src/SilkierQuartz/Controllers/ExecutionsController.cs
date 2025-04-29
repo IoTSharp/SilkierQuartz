@@ -28,7 +28,8 @@ namespace SilkierQuartz.Controllers
                     TriggerName = exec.Trigger.Key.Name,
                     ScheduledFireTime = exec.ScheduledFireTimeUtc?.UtcDateTime.ToDefaultFormat(),
                     ActualFireTime = exec.FireTimeUtc.UtcDateTime.ToDefaultFormat(),
-                    RunTime = exec.JobRunTime.ToString("hh\\:mm\\:ss")
+                    RunTime = exec.JobRunTime.ToString("hh\\:mm\\:ss"),
+                    EnableEdit = EnableEdit
                 });
             }
 

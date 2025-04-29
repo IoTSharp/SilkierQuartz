@@ -21,9 +21,11 @@
         {{/each}}
     </div>
 </div>
+{{#if ViewBag.EnableEdit }}
 <a class="ui right floated primary button" href="{{ActionUrl 'New'}}">
     <i class="plus icon"></i>New
 </a>
+{{/if}}
 
 <div id="msg-panel"></div>
 
@@ -49,8 +51,10 @@
             </td>
             <td class="job-group">{{JobGroup}}</td>
             <td colspan="6" style="text-align: right">
+                {{#if EnableEdit }}
                 <a href="{{ActionUrl 'PauseJob' @ControllerName}}" class="ui super tiny button btn-pause-all"><i class="pause icon"></i>Pause All</a>
                 <a href="{{ActionUrl 'ResumeJob' @ControllerName}}" class="ui super tiny button btn-resume-all"><i class="play icon"></i>Resume All</a>
+                {{/if}}
             </td>
         </tr>
         {{/if}}
@@ -104,7 +108,8 @@
 
     // search handling
 
-    var fGroup = undefined;
+    var fGroup = undefined,
+        enableEdit = {{{ ViewBag.EnableEdit }}};
     function applyFilter() {
         const fStr = $('#search-trigger').val().toLowerCase();
         $('#trigger-list > tbody > tr.job-key').hide();
@@ -156,7 +161,8 @@
             $_.data('fulltext', (trgGroup + '.' + trgName).toLowerCase());
             $_.data('trigger-group', trgGroup);
 
-            trgNameElm.append('<button class="ui icon mini detail button"><i class="dots icon"></i></button>');
+            if (enableEdit)
+                trgNameElm.append('<button class="ui icon mini detail button"><i class="dots icon"></i></button>');
         }
     });
 

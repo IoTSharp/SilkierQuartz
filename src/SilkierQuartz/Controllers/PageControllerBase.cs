@@ -49,6 +49,8 @@ namespace SilkierQuartz.Controllers
     {
         protected IScheduler Scheduler => Services.Scheduler;
 
+        protected bool EnableEdit => Services.Options.EnableEdit;
+
         protected dynamic ViewBag { get; } = new ExpandoObject();
 
         internal class Page
@@ -113,7 +115,7 @@ namespace SilkierQuartz.Controllers
         protected JobDataMapItem JobDataMapItemTemplate => new JobDataMapItem()
         {
             SelectedType = Services.Options.DefaultSelectedType,
-            SupportedTypes = Services.Options.StandardTypes.Order(),
+            SupportedTypes = Services.Options.StandardTypes.Order()
         };
     }
 }

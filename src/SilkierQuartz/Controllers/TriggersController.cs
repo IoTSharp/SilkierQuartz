@@ -40,17 +40,17 @@ namespace SilkierQuartz.Controllers
                         ScheduleDescription = t.GetScheduleDescription(Services),
                         History = Histogram.Empty,
                         StartTime = t.StartTimeUtc.UtcDateTime.ToDefaultFormat(),
-                        EndTime = t.StartTimeUtc.Year==9999?"":t.FinalFireTimeUtc?.UtcDateTime.ToDefaultFormat(),
+                        EndTime = t.StartTimeUtc.Year == 9999 ? "" : t.FinalFireTimeUtc?.UtcDateTime.ToDefaultFormat(),
                         LastFireTime = t.GetPreviousFireTimeUtc()?.UtcDateTime.ToDefaultFormat(),
                         NextFireTime = t.GetNextFireTimeUtc()?.UtcDateTime.ToDefaultFormat(),
                         ClrType = t.GetType().Name,
                         Description = t.Description,
+                        EnableEdit = EnableEdit
                     };
                     list.Add(tli);
                 }
                 catch (Exception ex)
                 {
-
                     Debug.Fail(ex.Message);
                 }
             }
@@ -67,6 +67,8 @@ namespace SilkierQuartz.Controllers
                     prevKey = item.JobKey;
                 }
             }
+
+            ViewBag.EnableEdit = EnableEdit;
 
             return View(list);
         }
@@ -139,6 +141,8 @@ namespace SilkierQuartz.Controllers
             }
 
             jobDataMap.Items.AddRange(trigger.GetJobDataMapModel(Services));
+
+            ViewBag.EnableEdit = EnableEdit;
 
             return View("Edit", new TriggerViewModel() { Trigger = model, DataMap = jobDataMap });
         }
@@ -290,7 +294,7 @@ namespace SilkierQuartz.Controllers
         {
             var keys = await Scheduler.GetTriggerKeys(GroupMatcher<TriggerKey>.AnyGroup());
             var ehs = Scheduler.Context.GetExecutionHistoryStore();
-            var history = ehs !=null? await ehs.FilterLastOfEveryTrigger(10) :null;
+            var history = ehs != null ? await ehs.FilterLastOfEveryTrigger(10) : null;
             var historyByTrigger = history?.ToLookup(x => x.Trigger);
             var list = new List<object>();
             foreach (var key in keys)
@@ -313,6 +317,7 @@ namespace SilkierQuartz.Controllers
         }
 
         bool EnsureValidKey(string name, string group) => !(string.IsNullOrEmpty(name) || string.IsNullOrEmpty(group));
+
         bool EnsureValidKey(KeyModel model) => EnsureValidKey(model.Name, model.Group);
     }
 }
