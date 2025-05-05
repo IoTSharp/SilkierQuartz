@@ -30,8 +30,7 @@ namespace SilkierQuartz.Controllers
 
             var silkierScheme = await schemes.GetSchemeAsync(authenticationOptions.AuthScheme);
 
-            if (string.IsNullOrEmpty(authenticationOptions.UserName) ||
-                string.IsNullOrEmpty(authenticationOptions.UserPassword))
+            if (authenticationOptions.Authenticate == null)
             {
                 foreach (var userClaim in HttpContext.User.Claims)
                 {
@@ -42,8 +41,7 @@ namespace SilkierQuartz.Controllers
                     !HttpContext.User.HasClaim(authenticationOptions.SilkierQuartzClaim,
                         authenticationOptions.SilkierQuartzClaimValue))
                 {
-                    await SignIn(false);
-
+                    await SignIn(false, SilkierQuartzAuthenticationOptions.DefaultUserName, SilkierQuartzAuthenticationOptions.DefaultPassword);
                     return RedirectToAction(nameof(SchedulerController.Index), nameof(Scheduler));
                 }
                 else
@@ -70,19 +68,16 @@ namespace SilkierQuartz.Controllers
         public async Task<IActionResult> Login([FromForm] AuthenticateViewModel request)
         {
             var form = HttpContext.Request.Form;
-
-            if (string.Compare(request.UserName, authenticationOptions.UserName,
-                StringComparison.InvariantCulture) != 0 ||
-                string.Compare(request.Password, authenticationOptions.UserPassword,
-                    StringComparison.InvariantCulture) != 0)
+            if (!authenticationOptions.Authenticate(request.UserName, request.Password))
             {
                 request.IsLoginError = true;
                 return View(request);
             }
-
-            await SignIn(request.IsPersist);
-
-            return RedirectToAction(nameof(SchedulerController.Index), nameof(Scheduler));
+            else
+            {
+                await SignIn(request.IsPersist, request.UserName, request.Password);
+                return RedirectToAction(nameof(SchedulerController.Index), nameof(Scheduler));
+            }
         }
 
         [HttpGet]
@@ -93,17 +88,17 @@ namespace SilkierQuartz.Controllers
             return RedirectToAction(nameof(Login));
         }
 
-        private async Task SignIn(bool isPersistentSignIn)
+        private async Task SignIn(bool isPersistentSignIn, string userName, string password)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, string.IsNullOrEmpty(authenticationOptions.UserName)
+                new Claim(ClaimTypes.NameIdentifier, string.IsNullOrEmpty(userName)
                     ? "SilkierQuartzAdmin"
-                    : authenticationOptions.UserName ),
+                    : SilkierQuartzAuthenticationOptions.DefaultUserName),
 
-                new Claim(ClaimTypes.Name, string.IsNullOrEmpty(authenticationOptions.UserPassword)
+                new Claim(ClaimTypes.Name, string.IsNullOrEmpty(password)
                     ? "SilkierQuartzPassword"
-                    : authenticationOptions.UserPassword),
+                    : SilkierQuartzAuthenticationOptions.DefaultPassword),
 
                 new Claim(authenticationOptions.SilkierQuartzClaim, authenticationOptions.SilkierQuartzClaimValue)
             };

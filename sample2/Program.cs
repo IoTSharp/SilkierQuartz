@@ -40,8 +40,6 @@ services.AddSilkierQuartz(options =>
                 authenticationOptions.AuthScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 authenticationOptions.SilkierQuartzClaim = "Silkier";
                 authenticationOptions.SilkierQuartzClaimValue = "Quartz";
-                authenticationOptions.UserName = "admin";
-                authenticationOptions.UserPassword = "password";
                 authenticationOptions.AccessRequirement = SilkierQuartzAuthenticationOptions.SimpleAccessRequirement.AllowOnlyUsersWithClaim;
             }
 #else
