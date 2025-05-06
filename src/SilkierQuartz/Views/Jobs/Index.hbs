@@ -139,8 +139,8 @@
     function bindContextMenu(menu, row, jobName, jobGroup) {
 
         menu.find('>.menu-edit').attr('href', row.find('>.job-name a').attr('href'));
-        menu.find('>.menu-copy').attr('href', '{{ActionUrl "Duplicate"}}?group=' + jobGroup + '&name=' + jobName);
-        menu.find('>.menu-trigger').attr('href', '{{ActionUrl "Trigger"}}?group=' + jobGroup + '&name=' + jobName);
+        menu.find('>.menu-copy').attr('href', '{{ActionUrl "Duplicate"}}?group=' + encodeURIComponent(jobGroup) + '&name=' + encodeURIComponent(jobName));
+        menu.find('>.menu-trigger').attr('href', '{{ActionUrl "Trigger"}}?group=' + encodeURIComponent(jobGroup) + '&name=' + encodeURIComponent(jobName));
         menu.find('>.menu-delete').click(function () {
             $('#delete-dialog .confirm-item').text(jobGroup +'.' + jobName);
             deleteItem({ name: jobName, group: jobGroup }, $('#msg-panel'),
