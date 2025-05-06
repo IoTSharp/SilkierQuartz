@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HandlebarsDotNet;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -7,7 +8,7 @@ namespace SilkierQuartz
     public class ViewEngine
     {
         readonly Services _services;
-        readonly Dictionary<string, Func<object, string>> _compiledViews = new Dictionary<string, Func<object, string>>(StringComparer.OrdinalIgnoreCase);
+        readonly Dictionary<string, HandlebarsTemplate<object, string>> _compiledViews = new Dictionary<string, HandlebarsTemplate<object, string>>(StringComparer.OrdinalIgnoreCase);
 
         public bool UseCache { get; set; }
 
@@ -17,7 +18,7 @@ namespace SilkierQuartz
             UseCache = string.IsNullOrEmpty(services.Options.ViewsRootDirectory);
         }
 
-        Func<object, string> GetRenderDelegate(string templatePath)
+        HandlebarsTemplate<object, string> GetRenderDelegate(string templatePath)
         {
             if (UseCache)
             {
@@ -44,7 +45,7 @@ namespace SilkierQuartz
 
         public string Encode(object value)
         {
-            return _services.Handlebars.Configuration.TextEncoder.Encode(string.Format(CultureInfo.InvariantCulture, "{0}", value));
+            return string.Format(CultureInfo.InvariantCulture, "{0}", value);
         }
 
         public string ErrorPage(Exception ex)
