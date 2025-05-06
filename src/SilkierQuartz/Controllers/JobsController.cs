@@ -162,7 +162,7 @@ namespace SilkierQuartz.Controllers
                         .SetJobData(jobDataMap.GetQuartzJobDataMap())
                         .RequestRecovery(jobModel.Recovery)
                         .StoreDurably(jobModel.Durable)
-                        .DisallowConcurrentExecution(jobModel.Concurrent)
+                        .DisallowConcurrentExecution(!jobModel.Concurrent)
                         .PersistJobDataAfterExecution(jobModel.Persist)
                         .Build();
                 }
