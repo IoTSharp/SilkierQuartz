@@ -88,9 +88,9 @@ namespace Microsoft.AspNetCore.Builder
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(nameof(SilkierQuartz), $"{options.VirtualPathRoot}/{{controller=Scheduler}}/{{action=Index}}");
+                endpoints.MapControllerRoute(nameof(SilkierQuartz), $"{options.VirtualPathRoot}{(options.VirtualPathRoot.EndsWith('/')?"":"/")}{{controller=Scheduler}}/{{action=Index}}");
                 endpoints.MapControllerRoute($"{nameof(SilkierQuartz)}Authenticate",
-                    $"{options.VirtualPathRoot}/{{controller=Authenticate}}/{{action=Login}}");
+                    $"{options.VirtualPathRoot}{(options.VirtualPathRoot.EndsWith('/') ? "" : "/")}{{controller=Authenticate}}/{{action=Login}}");
             });
 
             var types = JobsListHelper.GetSilkierQuartzJobs();
@@ -157,7 +157,7 @@ namespace Microsoft.AspNetCore.Builder
             fs = new EmbeddedFileProvider(typeof(SilkierQuartzOptions).Assembly, "SilkierQuartz.Content");
             var fsOptions = new FileServerOptions()
             {
-                RequestPath = new PathString($"{options.VirtualPathRoot}/Content"),
+                RequestPath = new PathString($"{options.VirtualPathRoot}{(options.VirtualPathRoot.EndsWith('/') ? "" : "/")}Content"),
                 EnableDefaultFiles = false,
                 EnableDirectoryBrowsing = false,
                 FileProvider = fs
