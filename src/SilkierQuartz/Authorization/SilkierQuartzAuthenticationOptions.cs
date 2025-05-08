@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using System;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using SilkierQuartz.Authorization;
 
 namespace SilkierQuartz
@@ -19,8 +20,16 @@ namespace SilkierQuartz
         }
 
         public const string AuthorizationPolicyName = "SilkierQuartz";
-        public string UserName { get; set; } = "admin";
-        public string UserPassword { get; set; } = "password";
+
+        public const string DefaultUserName = "admin";
+        public const string DefaultPassword = "password";
+
+        public Func<string, string, bool> Authenticate = (userName, password) =>
+        {
+            return
+                string.Compare(userName, SilkierQuartzAuthenticationOptions.DefaultUserName, StringComparison.InvariantCulture) == 0 &&
+                string.Compare(password, SilkierQuartzAuthenticationOptions.DefaultPassword, StringComparison.InvariantCulture) == 0;
+        };
 
         /// <summary>
         /// Sets the authentication scheme for the SilkierQuartz authentication signin.
