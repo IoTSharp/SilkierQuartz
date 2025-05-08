@@ -1,4 +1,5 @@
-﻿using JsonSubTypes;
+﻿using HandlebarsDotNet;
+using JsonSubTypes;
 using Newtonsoft.Json;
 using SilkierQuartz.TypeHandlers;
 using System;
@@ -46,7 +47,7 @@ namespace SilkierQuartz
 
             public string TypeId { get; set; }
 
-            public Func<object, string> Render { get; set; }
+            public HandlebarsTemplate<object, string> Render { get; set; }
 
             public TypeHandlerResourcesAttribute Resources { get; set; }
         }
