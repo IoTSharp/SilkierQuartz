@@ -21,14 +21,15 @@ namespace SilkierQuartz
 
         public const string AuthorizationPolicyName = "SilkierQuartz";
 
-        public const string DefaultUserName = "admin";
-        public const string DefaultPassword = "password";
+        public string UserName { get; set; } = "admin";
+        public string Password { get; set; } = "password";
 
-        public Func<string, string, bool> Authenticate = (userName, password) =>
+        public Func<string, string, string, string, bool> Authenticate = (reqUserName, 
+            reqPassword, verifyUserName, verifyPassword) =>
         {
             return
-                string.Compare(userName, SilkierQuartzAuthenticationOptions.DefaultUserName, StringComparison.InvariantCulture) == 0 &&
-                string.Compare(password, SilkierQuartzAuthenticationOptions.DefaultPassword, StringComparison.InvariantCulture) == 0;
+                string.Compare(reqUserName, verifyUserName, StringComparison.InvariantCulture) == 0 &&
+                string.Compare(reqPassword, verifyPassword, StringComparison.InvariantCulture) == 0;
         };
 
         /// <summary>

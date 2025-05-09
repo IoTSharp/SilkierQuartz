@@ -281,6 +281,7 @@ namespace SilkierQuartz.Helpers
                 options.Template(writer, (object)context);
             }
         }
+
         void SilkierQuartzVersion(EncodedTextWriter  output, Context context, Arguments arguments)
         {
             var v = GetType().Assembly.GetCustomAttributes<AssemblyInformationalVersionAttribute>().FirstOrDefault();
@@ -295,11 +296,13 @@ namespace SilkierQuartz.Helpers
         {
             output.Write(_services.Options.ProductName);
         }
-        void CustomStyleSheet(TextWriter output, dynamic context, params object[] arguments)
+
+        void CustomStyleSheet(EncodedTextWriter output, Context context, Arguments arguments)
         {
             output.Write(_services.Options.CustomStyleSheet);
         }
-        void CustomFavicon(TextWriter output, dynamic context, params object[] arguments)
+
+        void CustomFavicon(EncodedTextWriter output, Context context, Arguments arguments)
         {
             output.Write(_services.Options.CustomFavicon);
         }

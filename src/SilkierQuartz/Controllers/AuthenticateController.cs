@@ -41,7 +41,7 @@ namespace SilkierQuartz.Controllers
                     !HttpContext.User.HasClaim(authenticationOptions.SilkierQuartzClaim,
                         authenticationOptions.SilkierQuartzClaimValue))
                 {
-                    await SignIn(false, SilkierQuartzAuthenticationOptions.DefaultUserName, SilkierQuartzAuthenticationOptions.DefaultPassword);
+                    await SignIn(false, authenticationOptions.UserName, authenticationOptions.Password);
                     return RedirectToAction(nameof(SchedulerController.Index), nameof(Scheduler));
                 }
                 else
@@ -68,7 +68,9 @@ namespace SilkierQuartz.Controllers
         public async Task<IActionResult> Login([FromForm] AuthenticateViewModel request)
         {
             var form = HttpContext.Request.Form;
-            if (!authenticationOptions.Authenticate(request.UserName, request.Password))
+            if (!authenticationOptions.Authenticate(request.UserName, 
+                request.Password, authenticationOptions.UserName, 
+                authenticationOptions.Password))
             {
                 request.IsLoginError = true;
                 return View(request);
@@ -94,11 +96,11 @@ namespace SilkierQuartz.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, string.IsNullOrEmpty(userName)
                     ? "SilkierQuartzAdmin"
-                    : SilkierQuartzAuthenticationOptions.DefaultUserName),
+                    : authenticationOptions.UserName),
 
                 new Claim(ClaimTypes.Name, string.IsNullOrEmpty(password)
                     ? "SilkierQuartzPassword"
-                    : SilkierQuartzAuthenticationOptions.DefaultPassword),
+                    : authenticationOptions.Password),
 
                 new Claim(authenticationOptions.SilkierQuartzClaim, authenticationOptions.SilkierQuartzClaimValue)
             };

@@ -22,6 +22,7 @@ namespace SilkierQuartz
         public SilkierQuartzAttribute(double minutes, double seconds, string _identity, string? _group, string _desciption) : this(0, 0, minutes, seconds, 0, 0, _identity, _group, _desciption)
         {
         }
+		
         public SilkierQuartzAttribute(double seconds, string _identity, string? _group, string _desciption) : this(0, 0, 0, seconds, 0, 0, _identity, _group, _desciption)
         {
         }
@@ -37,6 +38,7 @@ namespace SilkierQuartz
         public SilkierQuartzAttribute(double minutes, double seconds) : this(0, 0, minutes, seconds, 0, 0, null, null, null)
         {
         }
+		
         public SilkierQuartzAttribute(double seconds) : this(0, 0, 0, seconds, 0, 0, null, null, null)
         {
         }
@@ -55,6 +57,7 @@ namespace SilkierQuartz
                                              + seconds * TimeSpan.TicksPerSecond
                                              + milliseconds + TimeSpan.TicksPerMillisecond));
         }
+		
         public string Desciption { get; set; } = null;
         public string Identity { get; set; } = null;
         public string Group { get; set; } = null;

@@ -21,7 +21,7 @@
         {{/each}}
     </div>
 </div>
-{{#if ViewBag.EnableEdit }}
+{{#if ViewBag.EnableEdit}}
 <a class="ui right floated primary button" href="{{ActionUrl 'New'}}">
     <i class="plus icon"></i>New
 </a>
@@ -51,8 +51,10 @@
             </td>
             <td class="job-group">{{JobGroup}}</td>
             <td colspan="6" style="text-align: right">
+                {{#if EnableEdit}}
                 <a href="{{ActionUrl 'PauseJob' 'Triggers'}}" class="ui super tiny button btn-pause-all"><i class="pause icon"></i>Pause All</a>
                 <a href="{{ActionUrl 'ResumeJob' 'Triggers'}}" class="ui super tiny button btn-resume-all"><i class="play icon"></i>Resume All</a>
+                {{/if}}
             </td>
         </tr>
         {{/if}}
