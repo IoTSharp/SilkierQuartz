@@ -83,7 +83,7 @@ namespace SilkierQuartz.Controllers
 
             model.Type = TriggerType.Cron;
             model.Priority = 5;
-
+            ViewBag.EnableEdit = EnableEdit;
             return View("Edit", new TriggerViewModel() { Trigger = model, DataMap = jobDataMap });
         }
 

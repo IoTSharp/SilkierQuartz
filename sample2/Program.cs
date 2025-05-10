@@ -35,7 +35,7 @@ services.AddSilkierQuartz(options =>
     {
         DayOfWeekStartIndexZero = false //Quartz uses 1-7 as the range
     };
-    options.EnableEdit = false;
+    options.EnableEdit = true;
 }
 #if ENABLE_AUTH
             ,
