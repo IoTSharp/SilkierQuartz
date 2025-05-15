@@ -109,7 +109,7 @@
     // search handling
 
     var fGroup = undefined,
-        enableEdit = {{{ ViewBag.EnableEdit }}};
+        enableEdit = '{{ViewBag.EnableEdit}}' === 'True';
     function applyFilter() {
         const fStr = $('#search-trigger').val().toLowerCase();
         $('#trigger-list > tbody > tr.job-key').hide();
