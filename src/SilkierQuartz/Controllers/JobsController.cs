@@ -59,6 +59,8 @@ namespace SilkierQuartz.Controllers
             job.Group = SchedulerConstants.DefaultGroup;
             job.TypeList = Services.Cache.JobTypes;
 
+            ViewBag.EnableEdit = EnableEdit;
+
             return View("Edit", new JobViewModel() { Job = job, DataMap = jobDataMap });
         }
 
