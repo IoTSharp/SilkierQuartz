@@ -57,11 +57,11 @@ services.AddSilkierQuartz(options =>
 services.AddOptions();
 services.Configure<AppSettings>(configuration);
 services.Configure<InjectProperty>(options => { options.WriteText = "This is inject string"; });
-services.AddQuartzJob<HelloJob>(nameof(HelloJob), "sample")
-        .AddQuartzJob<InjectSampleJob>(nameof(InjectSampleJob), "sample")
-        .AddQuartzJob<HelloJobSingle>(nameof(HelloJobSingle), "sample")
-        .AddQuartzJob<InjectSampleJobSingle>(nameof(InjectSampleJobSingle), "sample")
-        .AddQuartzJob<LongRunningJob>(nameof(LongRunningJob), "sample");
+services.AddQuartzJob<HelloJob>(nameof(HelloJob))
+        .AddQuartzJob<InjectSampleJob>(nameof(InjectSampleJob))
+        .AddQuartzJob<HelloJobSingle>(nameof(HelloJobSingle))
+        .AddQuartzJob<InjectSampleJobSingle>(nameof(InjectSampleJobSingle))
+        .AddQuartzJob<LongRunningJob>(nameof(LongRunningJob));
 
 
 var app = builder.Build();

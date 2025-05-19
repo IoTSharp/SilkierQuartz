@@ -35,17 +35,12 @@ namespace SilkierQuartz
             return services;
         }
 
-        public static IServiceCollection AddQuartzJob<TJob>(this IServiceCollection services, string identity, string? group) where TJob : class
-        {
-            return services.AddQuartzJob<TJob>(identity, group, null);
-        }
-
-        public static IServiceCollection AddQuartzJob<TJob>(this IServiceCollection services, string identity, string? group, string description) where TJob : class
+        public static IServiceCollection AddQuartzJob<TJob>(this IServiceCollection services, string identity, string? group = null, string? description = null) where TJob : class
         {
             return services.AddQuartzJob(typeof(TJob), identity, group, description);
         }
 
-        public static IServiceCollection AddQuartzJob(this IServiceCollection services, Type t, string identity, string? group, string description)
+        public static IServiceCollection AddQuartzJob(this IServiceCollection services, Type t, string identity, string? group = null, string? description = null)
         {
             if (!services.Any(sd => sd.ServiceType == t))
             {
