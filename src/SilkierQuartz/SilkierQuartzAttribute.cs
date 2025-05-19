@@ -11,19 +11,19 @@ namespace SilkierQuartz
         {
         }
 
-        public SilkierQuartzAttribute(double days, double hours, double minutes, double seconds, double milliseconds, string _identity, string? _group, string _desciption) : this(days, hours, minutes, seconds, milliseconds, 0, _identity, _group, _desciption)
+        public SilkierQuartzAttribute(double days, double hours, double minutes, double seconds, double milliseconds, string _identity, string? _group = null, string _description = null) : this(days, hours, minutes, seconds, milliseconds, 0, _identity, _group, _description)
         {
         }
 
-        public SilkierQuartzAttribute(double hours, double minutes, double seconds, string _identity, string? _group, string _desciption) : this(0, hours, minutes, seconds, 0, 0, _identity, _group, _desciption)
+        public SilkierQuartzAttribute(double hours, double minutes, double seconds, string _identity, string? _group = null, string _description = null) : this(0, hours, minutes, seconds, 0, 0, _identity, _group, _description)
         {
         }
 
-        public SilkierQuartzAttribute(double minutes, double seconds, string _identity, string? _group, string _desciption) : this(0, 0, minutes, seconds, 0, 0, _identity, _group, _desciption)
+        public SilkierQuartzAttribute(double minutes, double seconds, string _identity, string? _group = null, string _description = null) : this(0, 0, minutes, seconds, 0, 0, _identity, _group, _description)
         {
         }
 		
-        public SilkierQuartzAttribute(double seconds, string _identity, string? _group, string _desciption) : this(0, 0, 0, seconds, 0, 0, _identity, _group, _desciption)
+        public SilkierQuartzAttribute(double seconds, string _identity, string? _group = null, string _description = null) : this(0, 0, 0, seconds, 0, 0, _identity, _group, _description)
         {
         }
 
@@ -48,8 +48,11 @@ namespace SilkierQuartz
             this.Manual = true;
         }
 
-        public SilkierQuartzAttribute(double days, double hours, double minutes, double seconds, double milliseconds, long ticks, string _identity, string? _group, string _desciption)
+        public SilkierQuartzAttribute(double days, double hours, double minutes, double seconds, double milliseconds, long ticks, string _identity, string? _group, string _description)
         {
+            Identity = _identity;
+            Group = _group;
+            Description = _description;
 
             WithInterval = TimeSpan.FromTicks(ticks + (long)(days * TimeSpan.TicksPerDay
                                              + hours * TimeSpan.TicksPerHour
@@ -58,7 +61,7 @@ namespace SilkierQuartz
                                              + milliseconds + TimeSpan.TicksPerMillisecond));
         }
 		
-        public string Desciption { get; set; } = null;
+        public string Description { get; set; } = null;
         public string Identity { get; set; } = null;
         public string Group { get; set; } = null;
         public TimeSpan WithInterval { get; set; }
