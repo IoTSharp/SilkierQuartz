@@ -43,25 +43,32 @@ namespace SilkierQuartz.HostedService
 
             foreach (var scheduleJob in _scheduleJobs)
             {
-                var isNewJob = true;
-                foreach (var trigger in scheduleJob.Triggers)
+                if (scheduleJob.Triggers != null && scheduleJob.Triggers.Any())
                 {
+                    var isNewJob = true;
+                    foreach (var trigger in scheduleJob.Triggers)
+                    {
 
-                    if (isNewJob)
-                    {
-                        if (!(await _scheduler.CheckExists(scheduleJob.JobDetail.Key, cancellationToken) ))
+                        if (isNewJob)
                         {
-                            await _scheduler.ScheduleJob(scheduleJob.JobDetail, trigger, cancellationToken);
+                            if (!(await _scheduler.CheckExists(scheduleJob.JobDetail.Key, cancellationToken)))
+                            {
+                                await _scheduler.ScheduleJob(scheduleJob.JobDetail, trigger, cancellationToken);
+                            }
                         }
-                    }
-                    else
-                    {
-                        if (!( await _scheduler.CheckExists(trigger.Key, cancellationToken)))
+                        else
                         {
-                            await _scheduler.ScheduleJob(trigger, cancellationToken);
+                            if (!(await _scheduler.CheckExists(trigger.Key, cancellationToken)))
+                            {
+                                await _scheduler.ScheduleJob(trigger, cancellationToken);
+                            }
                         }
+                        isNewJob = false;
                     }
-                    isNewJob = false;
+                }
+                else
+                {
+                    await _scheduler.AddJob(scheduleJob.JobDetail, true, cancellationToken);
                 }
             }
         }
