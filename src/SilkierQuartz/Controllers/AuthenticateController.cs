@@ -96,11 +96,7 @@ namespace SilkierQuartz.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, string.IsNullOrEmpty(userName)
                     ? "SilkierQuartzAdmin"
-                    : authenticationOptions.UserName),
-
-                new Claim(ClaimTypes.Name, string.IsNullOrEmpty(password)
-                    ? "SilkierQuartzPassword"
-                    : authenticationOptions.Password),
+                    : userName),
 
                 new Claim(authenticationOptions.SilkierQuartzClaim, authenticationOptions.SilkierQuartzClaimValue)
             };

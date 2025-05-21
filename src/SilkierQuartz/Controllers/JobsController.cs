@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using HandlebarsDotNet;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Quartz;
 using Quartz.Impl.Matchers;
@@ -8,6 +9,7 @@ using SilkierQuartz.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SilkierQuartz.Controllers
@@ -92,9 +94,30 @@ namespace SilkierQuartz.Controllers
 
             ModelValidator.Validate(jobDataMap, result.Errors);
 
+            var username = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             if (result.Success)
             {
-                await Scheduler.TriggerJob(JobKey.Create(name, group), jobDataMap.GetQuartzJobDataMap());
+                var jobKey = JobKey.Create(name, group);
+                var jobData = jobDataMap.GetQuartzJobDataMap();
+                if (username != null)
+                {
+                    var dt = DateTime.UtcNow;
+                    var truncatedUsername = username.Length > 30 ? username.Substring(0, 30) : username;
+                    var triggerName = $"{truncatedUsername}-{dt.ToString("ddMMHHmmss")}";
+                    var trigger =
+                        TriggerBuilder.Create()
+                            .WithIdentity(triggerName, "MT")
+                            .UsingJobData(jobData)
+                            .StartNow()
+                            .ForJob(jobKey)
+                            .Build();
+                    await Scheduler.ScheduleJob(trigger);
+                }
+                else
+                {
+                    await Scheduler.TriggerJob(jobKey, jobData);
+                }
             }
 
             return Json(result);
@@ -210,7 +233,7 @@ namespace SilkierQuartz.Controllers
         {
             var keys = await Scheduler.GetJobKeys(GroupMatcher<JobKey>.AnyGroup());
             var hsl = Scheduler.Context.GetExecutionHistoryStore();
-            var history = hsl!=null? await hsl.FilterLastOfEveryJob(10):null;
+            var history = hsl != null ? await hsl.FilterLastOfEveryJob(10) : null;
             var historyByJob = history?.ToLookup(x => x.Job);
 
             var list = new List<object>();
