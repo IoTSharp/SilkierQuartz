@@ -59,7 +59,7 @@ namespace Microsoft.Extensions.DependencyInjection
             types.ForEach(t =>
             {
                 var so = t.GetCustomAttribute<SilkierQuartzAttribute>();
-                services.AddQuartzJob(t, so.Identity ?? t.Name, so.Group, so.Desciption ?? t.FullName);
+                services.AddQuartzJob(t, so.Identity ?? t.Name, so.Manual ? true : false, so.Group, so.Description ?? t.FullName);
             });
             return services;
         }

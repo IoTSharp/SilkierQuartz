@@ -61,11 +61,11 @@ namespace SilkierQuartz.Example
             services.AddOptions();
             services.Configure<AppSettings>(Configuration);
             services.Configure<InjectProperty>(options => { options.WriteText = "This is inject string"; });
-            services.AddQuartzJob<HelloJob>(nameof(HelloJob), "example")
-                    .AddQuartzJob<InjectSampleJob>(nameof(InjectSampleJob), "example")
-                    .AddQuartzJob<HelloJobSingle>(nameof(HelloJobSingle), "example")
-                    .AddQuartzJob<InjectSampleJobSingle>(nameof(InjectSampleJobSingle), "example")
-                    .AddQuartzJob<LongRunningJob>(nameof(LongRunningJob), "example");
+            services.AddQuartzJob<HelloJob>(nameof(HelloJob))
+                    .AddQuartzJob<InjectSampleJob>(nameof(InjectSampleJob))
+                    .AddQuartzJob<HelloJobSingle>(nameof(HelloJobSingle))
+                    .AddQuartzJob<InjectSampleJobSingle>(nameof(InjectSampleJobSingle))
+                    .AddQuartzJob<LongRunningJob>(nameof(LongRunningJob));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

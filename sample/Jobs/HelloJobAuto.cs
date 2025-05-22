@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace SilkierQuartz.Example.Jobs
 {
 
-    [SilkierQuartz(5, Group = "example", Desciption = "this e sq test", TriggerDescription = "_hellojobauto", TriggerGroup = "SilkierQuartz")]
+    [SilkierQuartz(5, Group = "example", Description = "this e sq test", TriggerDescription = "_hellojobauto", TriggerGroup = "SilkierQuartz")]
     public class HelloJobAuto : IJob
     {
         public Task Execute(IJobExecutionContext context)

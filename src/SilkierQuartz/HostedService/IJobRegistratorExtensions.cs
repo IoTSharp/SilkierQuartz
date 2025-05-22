@@ -35,23 +35,18 @@ namespace SilkierQuartz
             return services;
         }
 
-        public static IServiceCollection AddQuartzJob<TJob>(this IServiceCollection services, string identity, string? group) where TJob : class
+        public static IServiceCollection AddQuartzJob<TJob>(this IServiceCollection services, string identity, bool durability = false, string? group = null, string? description = null) where TJob : class
         {
-            return services.AddQuartzJob<TJob>(identity, group, null);
+            return services.AddQuartzJob(typeof(TJob), identity, durability, group, description);
         }
 
-        public static IServiceCollection AddQuartzJob<TJob>(this IServiceCollection services, string identity, string? group, string description) where TJob : class
-        {
-            return services.AddQuartzJob(typeof(TJob), identity, group, description);
-        }
-
-        public static IServiceCollection AddQuartzJob(this IServiceCollection services, Type t, string identity, string? group, string description)
+        public static IServiceCollection AddQuartzJob(this IServiceCollection services, Type t, string identity, bool durability = false, string ? group = null, string? description = null)
         {
             if (!services.Any(sd => sd.ServiceType == t))
             {
                 services.AddTransient(t);
             }
-            var jobDetail = JobBuilder.Create(t).WithIdentity(identity, group).WithDescription(description).Build();
+            var jobDetail = JobBuilder.Create(t).StoreDurably(durability).WithIdentity(identity, group).WithDescription(description).Build();
             services.AddSingleton<IScheduleJob>(provider => new ScheduleJob(jobDetail, new List<ITrigger>()));
             return services;
         }
