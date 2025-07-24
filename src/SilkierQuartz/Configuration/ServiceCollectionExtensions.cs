@@ -37,6 +37,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     .AddCookie(authenticationOptions.AuthScheme, cfg =>
                     {
                         cfg.Cookie.Name = $"sq_authenticationOptions.AuthScheme";
+                        cfg.Cookie.Path = options.VirtualPathRoot;
                         cfg.LoginPath = $"{options.VirtualPathRoot}{(options.VirtualPathRoot.EndsWith('/') ? "" : "/")}Authenticate/Login";
                         cfg.AccessDeniedPath = $"{options.VirtualPathRoot}{(options.VirtualPathRoot.EndsWith('/') ? "" : "/")}Authenticate/Login";
                         cfg.ExpireTimeSpan = TimeSpan.FromDays(7);
