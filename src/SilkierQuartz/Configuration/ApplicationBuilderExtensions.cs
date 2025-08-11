@@ -68,7 +68,7 @@ namespace Microsoft.AspNetCore.Builder
                 {
                     options.Scheduler = app.ApplicationServices.GetRequiredService<ISchedulerFactory>()?.GetScheduler().Result;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     options.Scheduler = null;
                 }

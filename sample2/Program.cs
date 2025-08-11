@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using Quartz;
 using SilkierQuartz;
 using SilkierQuartz.Example;
 using SilkierQuartz.Example.Jobs;
+using System.Collections.Specialized;
 using System.Configuration;
 using WebApplication1.Data;
 
@@ -53,6 +55,11 @@ services.AddSilkierQuartz(options =>
              authenticationOptions.AccessRequirement = SilkierQuartzAuthenticationOptions.SimpleAccessRequirement.AllowAnonymous;
          }
 #endif
+        , stdSchedulerFactoryOptions =>
+        {
+            stdSchedulerFactoryOptions.Add("quartz.plugin.recentHistory.type",  $"{nameof(Quartz.Plugins.RecentHistory.ExecutionHistoryPlugin)},{nameof(Quartz.Plugins.RecentHistory)}");
+            stdSchedulerFactoryOptions.Add("quartz.plugin.recentHistory.storeType", $"{nameof(Quartz.Plugins.RecentHistory.Impl.SqlServerExecutionHistoryStore)},{nameof(Quartz.Plugins.RecentHistory)}");
+        }
             );
 services.AddOptions();
 services.Configure<AppSettings>(configuration);
@@ -97,7 +104,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseSilkierQuartz();
+app.UseSilkierQuartz( );
 app.MapRazorPages();
 #region  不使用 SilkierQuartzAttribe 属性的进行注册和使用的IJob，这里通过UseQuartzJob的IJob必须在  ConfigureServices进行AddQuartzJob
 

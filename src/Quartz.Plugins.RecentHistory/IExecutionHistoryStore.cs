@@ -5,6 +5,13 @@ using System.Threading.Tasks;
 namespace Quartz.Plugins.RecentHistory
 {
     [Serializable]
+    public class JobStats
+    {
+        public int TotalJobsExecuted { get; set; }
+        public int TotalJobsFailed { get; set; }
+    }
+
+    [Serializable]
     public class ExecutionHistoryEntry
     {
         public string FireInstanceId { get; set; }

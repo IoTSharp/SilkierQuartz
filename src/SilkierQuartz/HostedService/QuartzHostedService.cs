@@ -32,7 +32,6 @@ namespace SilkierQuartz.HostedService
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             var _scheduleJobs = Services.GetService<IEnumerable<IScheduleJob>>();
-
             _scheduler = await _schedulerFactory.GetScheduler();
             _scheduler.JobFactory = _jobFactory;
 
