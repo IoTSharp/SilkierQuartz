@@ -57,5 +57,11 @@ namespace SilkierQuartz
         /// Set to true to skip all requirement checks in <see cref="SilkierQuartzDefaultAuthorizationHandler"/>
         /// </summary>
         public bool SkipDefaultRequirementHandler { get; set; } = false;
+
+        /// <summary>
+        /// Provide a name for CookieAuthenticationOptions.Cookie.Name field used to configure services.AddCookie.
+        /// The value is only used when <see cref="SimpleAccessRequirement"/> is NOT set to <see cref="SimpleAccessRequirement.AllowAnonymous"/>
+        /// </summary>
+        public string CookieName { get; set; } = "sq_authenticationOptions.AuthScheme";
     }
 }
