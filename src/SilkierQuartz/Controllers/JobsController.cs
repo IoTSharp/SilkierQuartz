@@ -14,6 +14,27 @@ using System.Threading.Tasks;
 
 namespace SilkierQuartz.Controllers
 {
+    internal static class JobControllerUtils
+    {
+        private const string USERNAME_KEY = "__USERNAME";
+
+        public static ITrigger CreateAdHocTrigger(string username, JobKey jobKey, JobDataMap jobData)
+        {
+            var dt = DateTime.UtcNow;
+            var truncatedUsername = username.Length > 30 ? username.Substring(0, 30) : username;
+            var triggerName = $"{truncatedUsername}-{dt.ToString("ddMMHHmmss")}";
+            if (!jobData.ContainsKey(USERNAME_KEY))
+                jobData.Put(USERNAME_KEY, truncatedUsername);
+            return
+                TriggerBuilder.Create()
+                    .WithIdentity(triggerName, "MT")
+                    .UsingJobData(jobData)
+                    .StartNow()
+                    .ForJob(jobKey)
+                    .Build();
+        }
+    }
+
     [Authorize(Policy = SilkierQuartzAuthenticationOptions.AuthorizationPolicyName)]
     public class JobsController : PageControllerBase
     {
@@ -102,16 +123,7 @@ namespace SilkierQuartz.Controllers
                 var jobData = jobDataMap.GetQuartzJobDataMap();
                 if (username != null)
                 {
-                    var dt = DateTime.UtcNow;
-                    var truncatedUsername = username.Length > 30 ? username.Substring(0, 30) : username;
-                    var triggerName = $"{truncatedUsername}-{dt.ToString("ddMMHHmmss")}";
-                    var trigger =
-                        TriggerBuilder.Create()
-                            .WithIdentity(triggerName, "MT")
-                            .UsingJobData(jobData)
-                            .StartNow()
-                            .ForJob(jobKey)
-                            .Build();
+                    var trigger = JobControllerUtils.CreateAdHocTrigger(username, jobKey, jobData);
                     await Scheduler.ScheduleJob(trigger);
                 }
                 else
@@ -179,6 +191,7 @@ namespace SilkierQuartz.Controllers
 
             model.Validate(result.Errors);
             ModelValidator.Validate(jobDataMap, result.Errors);
+            var jobData = jobDataMap.GetQuartzJobDataMap();
 
             if (result.Success)
             {
@@ -188,7 +201,7 @@ namespace SilkierQuartz.Controllers
                         .OfType(Type.GetType(jobModel.Type, true))
                         .WithIdentity(jobModel.JobName, jobModel.Group)
                         .WithDescription(jobModel.Description)
-                        .SetJobData(jobDataMap.GetQuartzJobDataMap())
+                        .SetJobData(jobData)
                         .RequestRecovery(jobModel.Recovery)
                         .StoreDurably(jobModel.Durable)
                         .DisallowConcurrentExecution(!jobModel.Concurrent)
@@ -208,7 +221,17 @@ namespace SilkierQuartz.Controllers
 
                 if (trigger)
                 {
-                    await Scheduler.TriggerJob(JobKey.Create(jobModel.JobName, jobModel.Group));
+                    var username = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    var jobKey = JobKey.Create(jobModel.JobName, jobModel.Group);
+                    if (username != null)
+                    {
+                        var jobTrigger = JobControllerUtils.CreateAdHocTrigger(username, jobKey, jobData);
+                        await Scheduler.ScheduleJob(jobTrigger);
+                    }
+                    else
+                    {
+                        await Scheduler.TriggerJob(jobKey);
+                    }
                 }
             }
 
