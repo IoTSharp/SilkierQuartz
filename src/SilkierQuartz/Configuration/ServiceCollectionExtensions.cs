@@ -32,14 +32,16 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton(authenticationOptions);
             if (authenticationOptions.AccessRequirement != SilkierQuartzAuthenticationOptions.SimpleAccessRequirement.AllowAnonymous)
             {
+                var normalizedVirtualPath = $"{options.VirtualPathRoot}{(options.VirtualPathRoot.EndsWith('/') ? "" : "/")}";
+                var cookiePath = $"{options.BasePath}{(options.BasePath.EndsWith('/') ? "" : "/")}{normalizedVirtualPath.Trim('/')}";
                 services
                     .AddAuthentication(authenticationOptions.AuthScheme)
                     .AddCookie(authenticationOptions.AuthScheme, cfg =>
                     {
                         cfg.Cookie.Name = authenticationOptions.CookieName;
-                        cfg.Cookie.Path = options.VirtualPathRoot;
-                        cfg.LoginPath = $"{options.VirtualPathRoot}{(options.VirtualPathRoot.EndsWith('/') ? "" : "/")}Authenticate/Login";
-                        cfg.AccessDeniedPath = $"{options.VirtualPathRoot}{(options.VirtualPathRoot.EndsWith('/') ? "" : "/")}Authenticate/Login";
+                        cfg.Cookie.Path = cookiePath;
+                        cfg.LoginPath = $"{normalizedVirtualPath}Authenticate/Login";
+                        cfg.AccessDeniedPath = $"{normalizedVirtualPath}Authenticate/Login";
                         cfg.ExpireTimeSpan = TimeSpan.FromDays(7);
                         cfg.SlidingExpiration = true;
                     });
