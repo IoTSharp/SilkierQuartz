@@ -1,5 +1,7 @@
 using FakeItEasy;
 using Quartz;
+using Quartz.Plugins.RecentHistory;
+using Quartz.Plugins.RecentHistory.Impl;
 using Quartz.Spi;
 using System;
 using System.Collections.Generic;
@@ -17,6 +19,7 @@ namespace SilkierQuartz.Test
         {
             var serviceProvider = A.Fake<IServiceProvider>();
             A.CallTo(() => serviceProvider.GetService(typeof(IEnumerable<IScheduleJob>))).Returns(null);
+            A.CallTo(() => serviceProvider.GetService(typeof(IExecutionHistoryStore))).Returns(null);
 
             var schedulerFactory = A.Fake<ISchedulerFactory>();
             var scheduler = A.Fake<IScheduler>();
@@ -48,6 +51,7 @@ namespace SilkierQuartz.Test
 
             var serviceProvider = A.Fake<IServiceProvider>();
             A.CallTo(() => serviceProvider.GetService(typeof(IEnumerable<IScheduleJob>))).Returns(scheduleJobc);
+            A.CallTo(() => serviceProvider.GetService(typeof(IExecutionHistoryStore))).Returns(null);
 
 
             var schedulerFactory = A.Fake<ISchedulerFactory>();
@@ -82,6 +86,7 @@ namespace SilkierQuartz.Test
 
             var serviceProvider = A.Fake<IServiceProvider>();
             A.CallTo(() => serviceProvider.GetService(typeof(IEnumerable<IScheduleJob>))).Returns(scheduleJobc);
+            A.CallTo(() => serviceProvider.GetService(typeof(IExecutionHistoryStore))).Returns(null);
 
 
             var schedulerFactory = A.Fake<ISchedulerFactory>();
@@ -106,6 +111,30 @@ namespace SilkierQuartz.Test
                     A<ITrigger>.That.Matches(t => t == trigger2 || t == trigger3),
                     A<CancellationToken>.Ignored))
                 .MustHaveHappened(2,Times.Exactly);
+        }
+
+        [Fact(DisplayName = "Registers execution history store in scheduler context before start")]
+        public async Task IServiceCollectionExtensions_Register_ExecutionHistoryStore_InSchedulerContext()
+        {
+            var serviceProvider = A.Fake<IServiceProvider>();
+            A.CallTo(() => serviceProvider.GetService(typeof(IEnumerable<IScheduleJob>))).Returns(null);
+
+            var store = new InProcExecutionHistoryStore();
+            A.CallTo(() => serviceProvider.GetService(typeof(IExecutionHistoryStore))).Returns(store);
+
+            var schedulerFactory = A.Fake<ISchedulerFactory>();
+            var scheduler = A.Fake<IScheduler>();
+            var context = new SchedulerContext();
+            A.CallTo(() => scheduler.Context).Returns(context);
+            A.CallTo(() => schedulerFactory.GetScheduler(A<CancellationToken>.Ignored))
+                .Returns(Task.FromResult(scheduler));
+
+            var jobFactory = A.Fake<IJobFactory>();
+
+            var testClass = new QuartzHostedService(serviceProvider, schedulerFactory, jobFactory);
+            await testClass.StartAsync(CancellationToken.None);
+
+            context.GetExecutionHistoryStore().Should().BeSameAs(store);
         }
     }
 }

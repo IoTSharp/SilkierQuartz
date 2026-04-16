@@ -6,6 +6,7 @@ using Quartz;
 using SilkierQuartz;
 using SilkierQuartz.Example;
 using SilkierQuartz.Example.Jobs;
+using Quartz.Plugins.RecentHistory;
 using System.Collections.Specialized;
 using System.Configuration;
 using WebApplication1.Data;
@@ -55,12 +56,8 @@ services.AddSilkierQuartz(options =>
              authenticationOptions.AccessRequirement = SilkierQuartzAuthenticationOptions.SimpleAccessRequirement.AllowAnonymous;
          }
 #endif
-        , stdSchedulerFactoryOptions =>
-        {
-            stdSchedulerFactoryOptions.Add("quartz.plugin.recentHistory.type",  $"{nameof(Quartz.Plugins.RecentHistory.ExecutionHistoryPlugin)},{nameof(Quartz.Plugins.RecentHistory)}");
-            stdSchedulerFactoryOptions.Add("quartz.plugin.recentHistory.storeType", $"{nameof(Quartz.Plugins.RecentHistory.Impl.SqlServerExecutionHistoryStore)},{nameof(Quartz.Plugins.RecentHistory)}");
-        }
             );
+services.AddExecutionHistoryStore(setting => setting.UseSqlServer(connectionString));
 services.AddOptions();
 services.Configure<AppSettings>(configuration);
 services.Configure<InjectProperty>(options => { options.WriteText = "This is inject string"; });

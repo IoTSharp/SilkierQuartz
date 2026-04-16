@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz.Impl;
 using Quartz;
+using Quartz.Plugins.RecentHistory;
 using Quartz.Spi;
 using System.Linq;
 
@@ -32,8 +33,13 @@ namespace SilkierQuartz.HostedService
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             var _scheduleJobs = Services.GetService<IEnumerable<IScheduleJob>>();
+            var executionHistoryStore = Services.GetService<IExecutionHistoryStore>();
             _scheduler = await _schedulerFactory.GetScheduler();
             _scheduler.JobFactory = _jobFactory;
+            if (executionHistoryStore != null)
+            {
+                _scheduler.Context.SetExecutionHistoryStore(executionHistoryStore);
+            }
 
             await _scheduler.Start(cancellationToken);
 
