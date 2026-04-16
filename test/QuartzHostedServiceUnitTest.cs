@@ -1,4 +1,5 @@
 using FakeItEasy;
+using FluentAssertions;
 using Quartz;
 using Quartz.Plugins.RecentHistory;
 using Quartz.Plugins.RecentHistory.Impl;

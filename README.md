@@ -85,6 +85,8 @@ Add to your `Startup.cs` file:
 public void ConfigureServices(IServiceCollection services)
 {
     services.AddSilkierQuartz();
+    services.AddExecutionHistoryStore(setting =>
+        setting.UseSqlite("Data Source=silkierquartz-history.db"));
 }
 
 public void Configure(IApplicationBuilder app)
@@ -110,8 +112,17 @@ public void Configure(IApplicationBuilder app)
 }
 ```
 
+For applications that already manage their own ADO.NET provider factory, you can also configure the centralized execution history store through the generic provider interface:
+```csharp
+services.AddExecutionHistoryStore(setting =>
+    setting.UseAdoProvider(
+        providerInvariantName: "Microsoft.Data.SqlClient",
+        connectionString: configuration.GetConnectionString("QuartzHistory"),
+        providerFactory: SqlClientFactory.Instance));
+```
+
 ## Notes
-In clustered environment, it make more sense to host SilkierQuartz on single dedicated Quartz.NET node in standby mode and implement own `IExecutionHistoryStore` depending on database or ORM framework you typically incorporate. Every clustered Quarz.NET node should be configured with `ExecutionHistoryPlugin` and only dedicated node for management may have `SilkierQuartzPlugin`.
+In clustered environments, you can now register a centralized execution history store directly with `AddExecutionHistoryStore(...)`. SilkierQuartz will automatically enable `ExecutionHistoryPlugin`, and if no external store is configured the plugin falls back to the existing in-process history store.
 
 
 ## License

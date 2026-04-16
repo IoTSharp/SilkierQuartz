@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using Quartz;
-using SilkierQuartz;
-using SilkierQuartz.Example;
-using SilkierQuartz.Example.Jobs;
-using Quartz.Plugins.RecentHistory;
 using System.Collections.Specialized;
 using System.Configuration;
 using WebApplication1.Data;
+using SilkierQuartz;
+using SilkierQuartz.Example;
+using SilkierQuartz.Example.Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,7 +57,7 @@ services.AddSilkierQuartz(options =>
          }
 #endif
             );
-services.AddExecutionHistoryStore(setting => setting.UseSqlServer(connectionString));
+services.AddExecutionHistoryStore(setting => setting.UseSqlServer(connectionString, SqlClientFactory.Instance));
 services.AddOptions();
 services.Configure<AppSettings>(configuration);
 services.Configure<InjectProperty>(options => { options.WriteText = "This is inject string"; });

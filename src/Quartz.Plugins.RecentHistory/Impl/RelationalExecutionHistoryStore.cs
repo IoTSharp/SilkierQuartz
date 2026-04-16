@@ -1,8 +1,3 @@
-using Microsoft.Data.SqlClient;
-using Microsoft.Data.Sqlite;
-using MySqlConnector;
-using Npgsql;
-using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,50 +9,56 @@ using System.Threading.Tasks;
 
 namespace Quartz.Plugins.RecentHistory.Impl
 {
-    internal enum RelationalExecutionHistoryStoreProvider
-    {
-        Sqlite,
-        PostgreSql,
-        MySql,
-        SqlServer,
-        Oracle
-    }
-
     internal sealed class RelationalExecutionHistoryStoreSettings
     {
-        public RelationalExecutionHistoryStoreProvider Provider { get; }
+        public string ProviderInvariantName { get; }
+        public DbProviderFactory ProviderFactory { get; }
         public string ConnectionString { get; }
         public string TablePrefix { get; }
 
         private RelationalExecutionHistoryStoreSettings(
-            RelationalExecutionHistoryStoreProvider provider,
+            string providerInvariantName,
             string connectionString,
+            DbProviderFactory providerFactory,
             string tablePrefix)
         {
+            if (string.IsNullOrWhiteSpace(providerInvariantName))
+            {
+                throw new ArgumentException("An ADO.NET provider invariant name is required.", nameof(providerInvariantName));
+            }
+
             if (string.IsNullOrWhiteSpace(connectionString))
             {
                 throw new ArgumentException("A database connection string is required.", nameof(connectionString));
             }
 
-            Provider = provider;
+            ProviderInvariantName = providerInvariantName.Trim();
+            ProviderFactory = providerFactory;
             ConnectionString = connectionString;
             TablePrefix = string.IsNullOrWhiteSpace(tablePrefix) ? ExecutionHistoryStoreOptions.DefaultTablePrefix : tablePrefix.Trim();
         }
 
-        public static RelationalExecutionHistoryStoreSettings CreateSqlite(string connectionString, string tablePrefix)
-            => new RelationalExecutionHistoryStoreSettings(RelationalExecutionHistoryStoreProvider.Sqlite, connectionString, tablePrefix);
+        public static RelationalExecutionHistoryStoreSettings Create(
+            string providerInvariantName,
+            string connectionString,
+            DbProviderFactory providerFactory,
+            string tablePrefix)
+            => new RelationalExecutionHistoryStoreSettings(providerInvariantName, connectionString, providerFactory, tablePrefix);
 
-        public static RelationalExecutionHistoryStoreSettings CreatePostgreSql(string connectionString, string tablePrefix)
-            => new RelationalExecutionHistoryStoreSettings(RelationalExecutionHistoryStoreProvider.PostgreSql, connectionString, tablePrefix);
+        public static RelationalExecutionHistoryStoreSettings CreateSqlite(string connectionString, DbProviderFactory providerFactory, string tablePrefix)
+            => Create("Microsoft.Data.Sqlite", connectionString, providerFactory, tablePrefix);
 
-        public static RelationalExecutionHistoryStoreSettings CreateMySql(string connectionString, string tablePrefix)
-            => new RelationalExecutionHistoryStoreSettings(RelationalExecutionHistoryStoreProvider.MySql, connectionString, tablePrefix);
+        public static RelationalExecutionHistoryStoreSettings CreatePostgreSql(string connectionString, DbProviderFactory providerFactory, string tablePrefix)
+            => Create("Npgsql", connectionString, providerFactory, tablePrefix);
 
-        public static RelationalExecutionHistoryStoreSettings CreateSqlServer(string connectionString, string tablePrefix)
-            => new RelationalExecutionHistoryStoreSettings(RelationalExecutionHistoryStoreProvider.SqlServer, connectionString, tablePrefix);
+        public static RelationalExecutionHistoryStoreSettings CreateMySql(string connectionString, DbProviderFactory providerFactory, string tablePrefix)
+            => Create("MySqlConnector", connectionString, providerFactory, tablePrefix);
 
-        public static RelationalExecutionHistoryStoreSettings CreateOracle(string connectionString, string tablePrefix)
-            => new RelationalExecutionHistoryStoreSettings(RelationalExecutionHistoryStoreProvider.Oracle, connectionString, tablePrefix);
+        public static RelationalExecutionHistoryStoreSettings CreateSqlServer(string connectionString, DbProviderFactory providerFactory, string tablePrefix)
+            => Create("Microsoft.Data.SqlClient", connectionString, providerFactory, tablePrefix);
+
+        public static RelationalExecutionHistoryStoreSettings CreateOracle(string connectionString, DbProviderFactory providerFactory, string tablePrefix)
+            => Create("Oracle.ManagedDataAccess.Client", connectionString, providerFactory, tablePrefix);
     }
 
     [Serializable]
@@ -436,16 +437,24 @@ VALUES ({Parameter("Id")}, 0, 0);");
 
         private async Task<DbConnection> OpenConnectionAsync()
         {
-            DbConnection connection = _settings.Provider switch
+            var providerFactory = _settings.ProviderFactory;
+            if (providerFactory == null)
             {
-                RelationalExecutionHistoryStoreProvider.Sqlite => new SqliteConnection(_settings.ConnectionString),
-                RelationalExecutionHistoryStoreProvider.PostgreSql => new NpgsqlConnection(_settings.ConnectionString),
-                RelationalExecutionHistoryStoreProvider.MySql => new MySqlConnection(_settings.ConnectionString),
-                RelationalExecutionHistoryStoreProvider.SqlServer => new SqlConnection(_settings.ConnectionString),
-                RelationalExecutionHistoryStoreProvider.Oracle => new OracleConnection(_settings.ConnectionString),
-                _ => throw new NotSupportedException($"Unsupported execution history store provider '{_settings.Provider}'.")
-            };
+                try
+                {
+                    providerFactory = DbProviderFactories.GetFactory(_settings.ProviderInvariantName);
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException(
+                        $"No ADO.NET provider factory was available for '{_settings.ProviderInvariantName}'. Pass a DbProviderFactory to AddExecutionHistoryStore or register the provider with DbProviderFactories.",
+                        ex);
+                }
+            }
 
+            var connection = providerFactory.CreateConnection()
+                ?? throw new InvalidOperationException($"The ADO.NET provider '{_settings.ProviderInvariantName}' could not create a DbConnection instance.");
+            connection.ConnectionString = _settings.ConnectionString;
             await connection.OpenAsync();
             return connection;
         }
@@ -455,7 +464,7 @@ VALUES ({Parameter("Id")}, 0, 0);");
             var command = connection.CreateCommand();
             command.CommandText = sql;
             command.CommandType = CommandType.Text;
-            if (_settings.Provider == RelationalExecutionHistoryStoreProvider.Oracle)
+            if (_dialect.IsOracle)
             {
                 var bindByName = command.GetType().GetProperty("BindByName");
                 bindByName?.SetValue(command, true);
@@ -495,7 +504,7 @@ VALUES ({Parameter("Id")}, 0, 0);");
             => _dialect.ParameterPrefix + name;
 
         private string ParameterName(string name)
-            => _dialect.ParameterPrefix + name;
+            => name;
 
         private async Task<int> ExecuteScalarIntAsync(DbCommand command)
         {
@@ -558,6 +567,7 @@ VALUES ({Parameter("Id")}, 0, 0);");
         public string CreateExecutionHistoryTableSql { get; }
         public string CreateJobStatsTableSql { get; }
         public bool RequiresUpperCaseTableNameParameter { get; }
+        public bool IsOracle { get; }
 
         private RelationalExecutionHistoryStoreDialect(
             string parameterPrefix,
@@ -567,7 +577,8 @@ VALUES ({Parameter("Id")}, 0, 0);");
             string jobStatsTableExistsSql,
             string createExecutionHistoryTableSql,
             string createJobStatsTableSql,
-            bool requiresUpperCaseTableNameParameter = false)
+            bool requiresUpperCaseTableNameParameter = false,
+            bool isOracle = false)
         {
             ParameterPrefix = parameterPrefix;
             ExecutionHistoryTableName = executionHistoryTableName;
@@ -577,6 +588,7 @@ VALUES ({Parameter("Id")}, 0, 0);");
             CreateExecutionHistoryTableSql = createExecutionHistoryTableSql;
             CreateJobStatsTableSql = createJobStatsTableSql;
             RequiresUpperCaseTableNameParameter = requiresUpperCaseTableNameParameter;
+            IsOracle = isOracle;
         }
 
         public static RelationalExecutionHistoryStoreDialect Create(RelationalExecutionHistoryStoreSettings settings)
@@ -584,9 +596,9 @@ VALUES ({Parameter("Id")}, 0, 0);");
             var executionHistoryTableName = $"{settings.TablePrefix}ExecutionHistoryStore";
             var jobStatsTableName = $"{settings.TablePrefix}JobStats";
 
-            return settings.Provider switch
+            return settings.ProviderInvariantName switch
             {
-                RelationalExecutionHistoryStoreProvider.Sqlite => new RelationalExecutionHistoryStoreDialect(
+                _ when IsMatch(settings.ProviderInvariantName, "sqlite") => new RelationalExecutionHistoryStoreDialect(
                     "@",
                     executionHistoryTableName,
                     jobStatsTableName,
@@ -613,7 +625,7 @@ CREATE TABLE {jobStatsTableName} (
     total_jobs_executed INTEGER NOT NULL,
     total_jobs_failed INTEGER NOT NULL
 );"),
-                RelationalExecutionHistoryStoreProvider.PostgreSql => new RelationalExecutionHistoryStoreDialect(
+                _ when IsMatch(settings.ProviderInvariantName, "npgsql", "postgres", "postgresql") => new RelationalExecutionHistoryStoreDialect(
                     "@",
                     executionHistoryTableName,
                     jobStatsTableName,
@@ -640,7 +652,7 @@ CREATE TABLE {jobStatsTableName} (
     total_jobs_executed INTEGER NOT NULL,
     total_jobs_failed INTEGER NOT NULL
 );"),
-                RelationalExecutionHistoryStoreProvider.MySql => new RelationalExecutionHistoryStoreDialect(
+                _ when IsMatch(settings.ProviderInvariantName, "mysql") => new RelationalExecutionHistoryStoreDialect(
                     "@",
                     executionHistoryTableName,
                     jobStatsTableName,
@@ -667,7 +679,7 @@ CREATE TABLE {jobStatsTableName} (
     total_jobs_executed INT NOT NULL,
     total_jobs_failed INT NOT NULL
 );"),
-                RelationalExecutionHistoryStoreProvider.SqlServer => new RelationalExecutionHistoryStoreDialect(
+                _ when IsMatch(settings.ProviderInvariantName, "sqlclient", "sqlserver") => new RelationalExecutionHistoryStoreDialect(
                     "@",
                     executionHistoryTableName,
                     jobStatsTableName,
@@ -694,7 +706,7 @@ CREATE TABLE {jobStatsTableName} (
     total_jobs_executed INT NOT NULL,
     total_jobs_failed INT NOT NULL
 );"),
-                RelationalExecutionHistoryStoreProvider.Oracle => new RelationalExecutionHistoryStoreDialect(
+                _ when IsMatch(settings.ProviderInvariantName, "oracle") => new RelationalExecutionHistoryStoreDialect(
                     ":",
                     executionHistoryTableName,
                     jobStatsTableName,
@@ -721,9 +733,16 @@ CREATE TABLE {jobStatsTableName} (
     total_jobs_executed NUMBER(10) NOT NULL,
     total_jobs_failed NUMBER(10) NOT NULL
 );",
-                    requiresUpperCaseTableNameParameter: true),
-                _ => throw new NotSupportedException($"Unsupported execution history store provider '{settings.Provider}'.")
+                    requiresUpperCaseTableNameParameter: true,
+                    isOracle: true),
+                _ => throw new NotSupportedException($"Unsupported ADO.NET provider '{settings.ProviderInvariantName}'.")
             };
+        }
+
+        private static bool IsMatch(string providerInvariantName, params string[] tokens)
+        {
+            var normalized = providerInvariantName?.Trim().ToLowerInvariant() ?? string.Empty;
+            return tokens.Any(token => normalized.Contains(token));
         }
     }
 }

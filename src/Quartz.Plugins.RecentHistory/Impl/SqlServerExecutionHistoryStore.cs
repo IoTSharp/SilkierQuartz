@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Common;
 
 namespace Quartz.Plugins.RecentHistory.Impl
 {
@@ -6,8 +7,11 @@ namespace Quartz.Plugins.RecentHistory.Impl
     [Serializable]
     public class SqlServerExecutionHistoryStore : RelationalExecutionHistoryStore
     {
-        public SqlServerExecutionHistoryStore(string connectionString, string tablePrefix = ExecutionHistoryStoreOptions.DefaultTablePrefix)
-            : base(RelationalExecutionHistoryStoreSettings.CreateSqlServer(connectionString, tablePrefix))
+        public SqlServerExecutionHistoryStore(
+            string connectionString,
+            DbProviderFactory providerFactory = null,
+            string tablePrefix = ExecutionHistoryStoreOptions.DefaultTablePrefix)
+            : base(RelationalExecutionHistoryStoreSettings.CreateSqlServer(connectionString, providerFactory, tablePrefix))
         {
         }
     }
