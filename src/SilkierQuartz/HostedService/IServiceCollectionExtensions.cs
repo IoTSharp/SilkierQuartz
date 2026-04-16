@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Quartz;
 using Quartz.Impl;
+using Quartz.Plugins.RecentHistory;
 using Quartz.Spi;
 using SilkierQuartz.HostedService;
 using System;
@@ -36,6 +37,12 @@ namespace SilkierQuartz
             {
                 var options = new NameValueCollection();
                 stdSchedulerFactoryOptions?.Invoke(options);
+                if (provider.GetService<IExecutionHistoryStore>() != null
+                    && string.IsNullOrWhiteSpace(options["quartz.plugin.recentHistory.type"]))
+                {
+                    options["quartz.plugin.recentHistory.type"] = $"{typeof(ExecutionHistoryPlugin).FullName}, {typeof(ExecutionHistoryPlugin).Assembly.GetName().Name}";
+                }
+
                 var result = new StdSchedulerFactory();
                 if (options.Count > 0)
                     result.Initialize(options);

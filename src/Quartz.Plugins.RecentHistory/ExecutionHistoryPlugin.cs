@@ -33,7 +33,7 @@ namespace Quartz.Plugins.RecentHistory
                     _store = (IExecutionHistoryStore)Activator.CreateInstance(StoreType);
 
                 if (_store == null)
-                    throw new Exception(nameof(StoreType) + " is not set.");
+                    _store = new Impl.InProcExecutionHistoryStore();
 
                 _scheduler.Context.SetExecutionHistoryStore(_store);
             }

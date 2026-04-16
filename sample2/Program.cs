@@ -1,14 +1,15 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using Quartz;
-using SilkierQuartz;
-using SilkierQuartz.Example;
-using SilkierQuartz.Example.Jobs;
 using System.Collections.Specialized;
 using System.Configuration;
 using WebApplication1.Data;
+using SilkierQuartz;
+using SilkierQuartz.Example;
+using SilkierQuartz.Example.Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,12 +56,8 @@ services.AddSilkierQuartz(options =>
              authenticationOptions.AccessRequirement = SilkierQuartzAuthenticationOptions.SimpleAccessRequirement.AllowAnonymous;
          }
 #endif
-        , stdSchedulerFactoryOptions =>
-        {
-            stdSchedulerFactoryOptions.Add("quartz.plugin.recentHistory.type",  $"{nameof(Quartz.Plugins.RecentHistory.ExecutionHistoryPlugin)},{nameof(Quartz.Plugins.RecentHistory)}");
-            stdSchedulerFactoryOptions.Add("quartz.plugin.recentHistory.storeType", $"{nameof(Quartz.Plugins.RecentHistory.Impl.SqlServerExecutionHistoryStore)},{nameof(Quartz.Plugins.RecentHistory)}");
-        }
             );
+services.AddExecutionHistoryStore(setting => setting.UseSqlServer(connectionString, SqlClientFactory.Instance));
 services.AddOptions();
 services.Configure<AppSettings>(configuration);
 services.Configure<InjectProperty>(options => { options.WriteText = "This is inject string"; });

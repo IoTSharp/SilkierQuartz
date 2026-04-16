@@ -86,6 +86,8 @@ PM> Install-Package SilkierQuartz
 public void ConfigureServices(IServiceCollection services)
 {
     services.AddSilkierQuartz();
+    services.AddExecutionHistoryStore(setting =>
+        setting.UseSqlite("Data Source=silkierquartz-history.db"));
 }
 
 public void Configure(IApplicationBuilder app)
@@ -101,8 +103,17 @@ public void Configure(IApplicationBuilder app)
 }
 ```
 
+如果应用已经自己管理 ADO.NET 提供程序工厂，也可以通过通用提供程序接口来配置集中式执行历史存储：
+```csharp
+services.AddExecutionHistoryStore(setting =>
+    setting.UseAdoProvider(
+        providerInvariantName: "Microsoft.Data.SqlClient",
+        connectionString: configuration.GetConnectionString("QuartzHistory"),
+        providerFactory: SqlClientFactory.Instance));
+```
+
 ## 注意
-在集群环境，可以通过实现`IExecutionHistoryStore` 使用数据库或者ORM共享数据， 每一个 Quarz.NET节点必须使用  `ExecutionHistoryPlugin`  并只通过 `SilkierQuartzPlugin`.
+在集群环境里，现在可以直接通过 `AddExecutionHistoryStore(...)` 注册集中式执行历史存储。SilkierQuartz 会自动启用 `ExecutionHistoryPlugin`；如果没有配置外部存储，则会自动回退到已有的进程内存储。
  
 ## 许可
 此项目基于 MIT license. 请查看 [LICENSE](LICENSE) 了解更多信息.

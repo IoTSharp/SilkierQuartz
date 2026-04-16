@@ -1,12 +1,15 @@
-﻿using FluentAssertions;
+using FluentAssertions;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Quartz;
 using Quartz.Impl;
+using Quartz.Plugins.RecentHistory;
 using Quartz.Spi;
 using SilkierQuartz;
 using SilkierQuartz.HostedService;
 using System;
+using System.IO;
 using Xunit;
 
 namespace SilkierQuartz.Test
@@ -72,6 +75,31 @@ namespace SilkierQuartz.Test
                 .NotBeNull()
                 .And.BeAssignableTo<IJobRegistrator>()
                 .Subject.Services.Should().Equal(serviceCollection);
+        }
+
+        [Fact(DisplayName = "AddExecutionHistoryStore registers relational store")]
+        public void IServiceCollectionExtensions_Register_ExecutionHistoryStore()
+        {
+            var databaseFile = Path.Combine(Path.GetTempPath(), $"silkierquartz-history-{Guid.NewGuid():N}.db");
+            try
+            {
+                IServiceCollection serviceCollection = new ServiceCollection();
+                serviceCollection.AddExecutionHistoryStore(setting =>
+                    setting.UseAdoProvider(
+                        "Microsoft.Data.Sqlite",
+                        $"Data Source={databaseFile};Mode=ReadWriteCreate;Cache=Shared",
+                        SqliteFactory.Instance));
+
+                var store = serviceCollection.BuildServiceProvider().GetRequiredService<IExecutionHistoryStore>();
+                store.Should().BeOfType<Quartz.Plugins.RecentHistory.Impl.RelationalExecutionHistoryStore>();
+            }
+            finally
+            {
+                if (File.Exists(databaseFile))
+                {
+                    File.Delete(databaseFile);
+                }
+            }
         }
     }
 }

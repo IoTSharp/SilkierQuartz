@@ -2,24 +2,70 @@ name: .NET Core
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - '**'
+    tags:
+      - 'v*'
   pull_request:
-    branches: [ master ]
+    branches:
+      - '**'
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET Core SDK
-      uses: actions/setup-dotnet@v1.8.1
-      with:
-        dotnet-version: 9.0.100
-    - name: Install dependencies
-      run: dotnet restore ./src/SilkierQuartz/SilkierQuartz.csproj
-    - name: Build
-      run: dotnet build  ./src/SilkierQuartz/SilkierQuartz.csproj  --configuration Release  
-    - name: Test
-      run: dotnet test ./test/SilkierQuartz.Test.csproj  --verbosity normal
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore
+        run: dotnet restore ./SilkierQuartz.sln
+
+      - name: Build
+        run: dotnet build ./SilkierQuartz.sln --configuration Release --no-restore /p:GeneratePackageOnBuild=false
+
+      - name: Test
+        run: dotnet test ./test/SilkierQuartz.Test.csproj --configuration Release --no-build --verbosity normal
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore
+        run: dotnet restore ./SilkierQuartz.sln
+
+      - name: Pack release artifacts
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          dotnet pack ./src/Quartz.Plugins.RecentHistory/Quartz.Plugins.RecentHistory.csproj --configuration Release --no-restore --output ./artifacts /p:GeneratePackageOnBuild=false /p:Version="$VERSION"
+          dotnet pack ./src/SilkierQuartz/SilkierQuartz.csproj --configuration Release --no-restore --output ./artifacts /p:GeneratePackageOnBuild=false /p:Version="$VERSION"
+
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: ./artifacts/*.nupkg
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ./artifacts/*.nupkg
+
+      - name: Publish to NuGet
+        if: secrets.NUGET_API_KEY != ''
+        shell: bash
+        run: dotnet nuget push "./artifacts/*.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
