@@ -16,4 +16,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\src\Quartz.Plugins.RecentHistory.EFCore\Quartz.Plugins.RecentHistory.EFCore.csproj" />
+  </ItemGroup>
+
 </Project>
