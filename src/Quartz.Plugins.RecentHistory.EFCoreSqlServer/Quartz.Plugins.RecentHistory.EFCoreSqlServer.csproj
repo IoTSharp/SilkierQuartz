@@ -19,6 +19,7 @@
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/IoTSharp/SilkierQuartz</RepositoryUrl>
         <PackageId>SilkierQuartz.Plugins.RecentHistory.EFCoreSqlServer</PackageId>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IsPackable>true</IsPackable>
         <Nullable>disable</Nullable>
@@ -31,6 +32,7 @@
 
     <ItemGroup>
         <None Include="..\..\.editorconfig" Link=".editorconfig" />
+        <None Include="..\..\README.md" Pack="true" PackagePath="" Link="README.md" />
         <None Include="..\..\LICENSE" Pack="true" PackagePath="" />
     </ItemGroup>
 

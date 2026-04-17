@@ -24,7 +24,7 @@ namespace SilkierQuartz.Controllers
             var truncatedUsername = username.Length > 30 ? username.Substring(0, 30) : username;
             var triggerName = $"{truncatedUsername}-{dt.ToString("ddMMHHmmss")}";
             if (!jobData.ContainsKey(USERNAME_KEY))
-                jobData.Put(USERNAME_KEY, truncatedUsername);
+                jobData[USERNAME_KEY] = truncatedUsername;
             return
                 TriggerBuilder.Create()
                     .WithIdentity(triggerName, "MT")

@@ -97,7 +97,7 @@ namespace SilkierQuartz
             var map = new JobDataMap();
 
             foreach (var item in models)
-                map.Put(item.Name, item.Value);
+                map[item.Name] = item.Value;
 
             return map;
         }

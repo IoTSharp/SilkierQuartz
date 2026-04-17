@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace SilkierQuartz.Controllers
 {
-    [AllowAnonymous]
     public class AuthenticateController : PageControllerBase
     {
         private readonly SilkierQuartzAuthenticationOptions authenticationOptions;
@@ -21,6 +20,7 @@ namespace SilkierQuartz.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Login([FromServices] IAuthenticationSchemeProvider schemes)
         {
             if (authenticationOptions.AccessRequirement == SilkierQuartzAuthenticationOptions.SimpleAccessRequirement.AllowAnonymous)
@@ -65,6 +65,7 @@ namespace SilkierQuartz.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Login([FromForm] AuthenticateViewModel request)
         {
             var form = HttpContext.Request.Form;

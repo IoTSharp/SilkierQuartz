@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿﻿#nullable enable
+
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using SilkierQuartz.HostedService;
@@ -18,7 +20,7 @@ namespace SilkierQuartz
             jobOptions?.Invoke(options);
 
             return jobRegistrator.RegiserJob<TJob>(
-                options.Triggers?.Select(n => n.CreateTriggerBuilder())
+                options.Triggers?.Select(n => n.CreateTriggerBuilder()) ?? Enumerable.Empty<TriggerBuilder>()
                 );
         }
 
@@ -40,13 +42,15 @@ namespace SilkierQuartz
             return services.AddQuartzJob(typeof(TJob), identity, durability, group, description);
         }
 
-        public static IServiceCollection AddQuartzJob(this IServiceCollection services, Type t, string identity, bool durability = false, string ? group = null, string? description = null)
+        public static IServiceCollection AddQuartzJob(this IServiceCollection services, Type t, string identity, bool durability = false, string? group = null, string? description = null)
         {
             if (!services.Any(sd => sd.ServiceType == t))
             {
                 services.AddTransient(t);
             }
-            var jobDetail = JobBuilder.Create(t).StoreDurably(durability).WithIdentity(identity, group).WithDescription(description).Build();
+            var jobBuilder = JobBuilder.Create(t).StoreDurably(durability);
+            jobBuilder = group is null ? jobBuilder.WithIdentity(identity) : jobBuilder.WithIdentity(identity, group);
+            var jobDetail = jobBuilder.WithDescription(description).Build();
             services.AddSingleton<IScheduleJob>(provider => new ScheduleJob(jobDetail, new List<ITrigger>()));
             return services;
         }
@@ -77,7 +81,7 @@ namespace SilkierQuartz
             string JobKey,
             Func<TriggerBuilder> triggerBuilder_func) where TJob : class, IJob
         {
-            var _scheduleJobs = app.ApplicationServices.GetService<IEnumerable<IScheduleJob>>();
+            var _scheduleJobs = app.ApplicationServices.GetRequiredService<IEnumerable<IScheduleJob>>();
 
             var job = from js in _scheduleJobs where js.JobDetail.JobType == typeof(TJob) && js.JobDetail.Key.Name == JobKey select js;
             if (job.Any())
@@ -145,7 +149,7 @@ namespace SilkierQuartz
             Type t,
             IEnumerable<TriggerBuilder> triggerBuilders)
         {
-            var _scheduleJobs = app.ApplicationServices.GetService<IEnumerable<IScheduleJob>>();
+            var _scheduleJobs = app.ApplicationServices.GetRequiredService<IEnumerable<IScheduleJob>>();
             var job = from js in _scheduleJobs where js.JobDetail.JobType == t select js;
             if (job.Any())
             {

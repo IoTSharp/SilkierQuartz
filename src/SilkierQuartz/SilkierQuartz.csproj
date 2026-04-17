@@ -26,6 +26,7 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>SilkierQuartz</PackageId>
 		<PackageIcon>logo.png</PackageIcon>
+       <PackageReadmeFile>README.md</PackageReadmeFile>
 		<IsPackable>true</IsPackable>
 	</PropertyGroup>
 	<PropertyGroup>
@@ -57,6 +58,7 @@
  
 
 	<ItemGroup>
+     <None Include="..\..\README.md" Pack="true" PackagePath="" Link="README.md" />
 		<None Include="..\..\LICENSE" Pack="true" PackagePath="" />
 		<None Include="Content\Images\logo.png">
 			<Pack>True</Pack>
