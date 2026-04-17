@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Quartz.Plugins.RecentHistory;
 
-namespace Quartz.Plugins.RecentHistory.EFCore
+namespace Quartz.Plugins.RecentHistory.EFCoreSqlServer
 {
     /// <summary>
     /// EF Core database context for SilkierQuartz execution history data.
@@ -51,7 +51,7 @@ namespace Quartz.Plugins.RecentHistory.EFCore
                 entity.ToTable(DefaultTablePrefix + "JobStats");
                 entity.HasKey(x => x.Id);
 
-                entity.Property(x => x.Id).HasColumnName("id");
+                entity.Property(x => x.Id).HasColumnName("id").ValueGeneratedNever();
                 entity.Property(x => x.TotalJobsExecuted).HasColumnName("total_jobs_executed").IsRequired();
                 entity.Property(x => x.TotalJobsFailed).HasColumnName("total_jobs_failed").IsRequired();
             });

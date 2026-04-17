@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Quartz.Plugins.RecentHistory.EFCore
+namespace Quartz.Plugins.RecentHistory.EFCoreSqlServer
 {
     /// <summary>
     /// Stores Quartz execution history through EF Core.

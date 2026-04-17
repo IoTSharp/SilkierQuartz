@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Quartz.Plugins.RecentHistory.EFCore;
+using Quartz.Plugins.RecentHistory.EFCoreSqlServer;
 
 #nullable disable
 
-namespace Quartz.Plugins.RecentHistory.EFCore.Migrations
+namespace Quartz.Plugins.RecentHistory.EFCoreSqlServer.Migrations
 {
     [DbContext(typeof(ExecutionHistoryDbContext))]
     partial class ExecutionHistoryDbContextModelSnapshot : ModelSnapshot
@@ -21,7 +21,7 @@ namespace Quartz.Plugins.RecentHistory.EFCore.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Quartz.Plugins.RecentHistory.EFCore.ExecutionHistoryDbContext+ExecutionHistoryRow", b =>
+            modelBuilder.Entity("Quartz.Plugins.RecentHistory.EFCoreSqlServer.ExecutionHistoryDbContext+ExecutionHistoryRow", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -100,14 +100,11 @@ namespace Quartz.Plugins.RecentHistory.EFCore.Migrations
                     b.ToTable("tb_quartz_ExecutionHistoryStore", (string)null);
                 });
 
-            modelBuilder.Entity("Quartz.Plugins.RecentHistory.EFCore.ExecutionHistoryDbContext+JobStatsRow", b =>
+            modelBuilder.Entity("Quartz.Plugins.RecentHistory.EFCoreSqlServer.ExecutionHistoryDbContext+JobStatsRow", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("TotalJobsExecuted")
                         .HasColumnType("int")

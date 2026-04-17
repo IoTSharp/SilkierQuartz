@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.5.11709.299 stable
+VisualStudioVersion = 18.5.11709.299
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quartz.Plugins.RecentHistory", "src\Quartz.Plugins.RecentHistory\Quartz.Plugins.RecentHistory.csproj", "{4CEFA319-5052-4B65-B1B8-647CCFFF2A1C}"
 EndProject
@@ -26,7 +26,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sample2", "sample2\sample2.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "example", "sample\example.csproj", "{89772254-F27D-4691-B78D-37BE3243441D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quartz.Plugins.RecentHistory.EFCore", "src\Quartz.Plugins.RecentHistory.EFCore\Quartz.Plugins.RecentHistory.EFCore.csproj", "{4AE75D81-DDDB-48BD-846A-44927D2C2885}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quartz.Plugins.RecentHistory.EFCoreSqlServer", "src\Quartz.Plugins.RecentHistory.EFCoreSqlServer\Quartz.Plugins.RecentHistory.EFCoreSqlServer.csproj", "{4AE75D81-DDDB-48BD-846A-44927D2C2885}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCoreExeHistoryStoreExample", "EFCoreExeHistoryStoreExample\EFCoreExeHistoryStoreExample.csproj", "{BDCA8B88-1E06-4E5D-B788-DE626283A163}"
 EndProject

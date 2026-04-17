@@ -1,4 +1,4 @@
-namespace Quartz.Plugins.RecentHistory.EFCore
+namespace Quartz.Plugins.RecentHistory.EFCoreSqlServer
 {
 public partial class ExecutionHistoryDbContext
     {

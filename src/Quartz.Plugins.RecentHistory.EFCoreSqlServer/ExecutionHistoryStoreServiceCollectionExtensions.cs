@@ -33,9 +33,9 @@ namespace Microsoft.Extensions.DependencyInjection
             ArgumentNullException.ThrowIfNull(services);
             ArgumentNullException.ThrowIfNull(configureDbContext);
 
-            services.AddDbContextFactory<Quartz.Plugins.RecentHistory.EFCore.ExecutionHistoryDbContext>(configureDbContext);
+            services.AddDbContextFactory<Quartz.Plugins.RecentHistory.EFCoreSqlServer.ExecutionHistoryDbContext>(configureDbContext);
             services.RemoveAll<IExecutionHistoryStore>();
-            services.AddSingleton<IExecutionHistoryStore, Quartz.Plugins.RecentHistory.EFCore.EfCoreExecutionHistoryStore>();
+            services.AddSingleton<IExecutionHistoryStore, Quartz.Plugins.RecentHistory.EFCoreSqlServer.EfCoreExecutionHistoryStore>();
             return services;
         }
     }

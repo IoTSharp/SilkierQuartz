@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Quartz.Plugins.RecentHistory.EFCore.Migrations
+namespace Quartz.Plugins.RecentHistory.EFCoreSqlServer.Migrations
 {
     /// <inheritdoc />
     public partial class QuartzPluginsRecentHistoryEFCore : Migration
@@ -37,8 +37,7 @@ namespace Quartz.Plugins.RecentHistory.EFCore.Migrations
                 name: "tb_quartz_JobStats",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    id = table.Column<int>(type: "int", nullable: false),
                     total_jobs_executed = table.Column<int>(type: "int", nullable: false),
                     total_jobs_failed = table.Column<int>(type: "int", nullable: false)
                 },

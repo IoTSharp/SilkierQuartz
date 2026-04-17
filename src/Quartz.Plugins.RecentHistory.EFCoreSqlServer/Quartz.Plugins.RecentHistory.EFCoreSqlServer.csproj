@@ -18,7 +18,7 @@
         <Copyright>Copyright © 2018 Jan Lucansky, Copyright © 2024 Maikebing</Copyright>
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/IoTSharp/SilkierQuartz</RepositoryUrl>
-        <PackageId>SilkierQuartz.Plugins.RecentHistory.EFCore</PackageId>
+        <PackageId>SilkierQuartz.Plugins.RecentHistory.EFCoreSqlServer</PackageId>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IsPackable>true</IsPackable>
         <Nullable>disable</Nullable>
