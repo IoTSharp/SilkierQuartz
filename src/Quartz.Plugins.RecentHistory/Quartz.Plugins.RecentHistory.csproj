@@ -1,16 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
+		<TargetFrameworks>net8.0;net10.0</TargetFrameworks>
 		<RestoreProjectStyle>PackageReference</RestoreProjectStyle>
 		<GeneratePackageOnBuild Condition="'$(Configuration)' == 'Release'">true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<NoWarn>1591</NoWarn>
-
 		<Version>10.0.0</Version>
 		<Product>SilkierQuartz</Product>
 		<Title>Quartz.NET plugin to persist recent job execution history</Title>
 		<Authors>Jan Lucansky,Maikebing</Authors>
-		<PackageProjectUrl>https://github.com/jlucansky/SilkierQuartz</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/IoTSharp/SilkierQuartz</PackageProjectUrl>
 		<Description>This is supporting package for SilkierQuartz</Description>
 		<PackageTags>quartz;recent;history</PackageTags>
 		<AssemblyVersion>10.0.0.0</AssemblyVersion>
@@ -18,7 +17,7 @@
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<Copyright>Copyright © 2018 Jan Lucansky, Copyright © 2024 Maikebing</Copyright>
 		<RepositoryType>git</RepositoryType>
-		<RepositoryUrl>https://github.com/jlucansky/SilkierQuartz</RepositoryUrl>
+		<RepositoryUrl>https://github.com/IoTSharp/SilkierQuartz</RepositoryUrl>
 		<PackageId>SilkierQuartz.Plugins.RecentHistory</PackageId>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>

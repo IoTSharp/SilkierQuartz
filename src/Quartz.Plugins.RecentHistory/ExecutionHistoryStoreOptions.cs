@@ -20,24 +20,6 @@ namespace Quartz.Plugins.RecentHistory
             return new RelationalExecutionHistoryStore(_settings);
         }
 
-        public ExecutionHistoryStoreOptions UseSqlite(string connectionString, DbProviderFactory providerFactory = null, string tablePrefix = DefaultTablePrefix)
-            => Use(RelationalExecutionHistoryStoreSettings.CreateSqlite(connectionString, providerFactory, tablePrefix));
-
-        public ExecutionHistoryStoreOptions UsePostgreSql(string connectionString, DbProviderFactory providerFactory = null, string tablePrefix = DefaultTablePrefix)
-            => Use(RelationalExecutionHistoryStoreSettings.CreatePostgreSql(connectionString, providerFactory, tablePrefix));
-
-        public ExecutionHistoryStoreOptions UsePgsql(string connectionString, DbProviderFactory providerFactory = null, string tablePrefix = DefaultTablePrefix)
-            => UsePostgreSql(connectionString, providerFactory, tablePrefix);
-
-        public ExecutionHistoryStoreOptions UseMySql(string connectionString, DbProviderFactory providerFactory = null, string tablePrefix = DefaultTablePrefix)
-            => Use(RelationalExecutionHistoryStoreSettings.CreateMySql(connectionString, providerFactory, tablePrefix));
-
-        public ExecutionHistoryStoreOptions UseSqlServer(string connectionString, DbProviderFactory providerFactory = null, string tablePrefix = DefaultTablePrefix)
-            => Use(RelationalExecutionHistoryStoreSettings.CreateSqlServer(connectionString, providerFactory, tablePrefix));
-
-        public ExecutionHistoryStoreOptions UseOracle(string connectionString, DbProviderFactory providerFactory = null, string tablePrefix = DefaultTablePrefix)
-            => Use(RelationalExecutionHistoryStoreSettings.CreateOracle(connectionString, providerFactory, tablePrefix));
-
         public ExecutionHistoryStoreOptions UseAdoProvider(
             string providerInvariantName,
             string connectionString,

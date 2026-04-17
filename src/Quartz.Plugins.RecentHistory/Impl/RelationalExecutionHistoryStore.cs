@@ -22,20 +22,58 @@ namespace Quartz.Plugins.RecentHistory.Impl
             DbProviderFactory providerFactory,
             string tablePrefix)
         {
-            if (string.IsNullOrWhiteSpace(providerInvariantName))
-            {
-                throw new ArgumentException("An ADO.NET provider invariant name is required.", nameof(providerInvariantName));
-            }
-
             if (string.IsNullOrWhiteSpace(connectionString))
             {
                 throw new ArgumentException("A database connection string is required.", nameof(connectionString));
+            }
+
+            // Infer provider invariant name from factory if not provided
+            if (string.IsNullOrWhiteSpace(providerInvariantName))
+            {
+                if (providerFactory == null)
+                {
+                    throw new ArgumentException("Either providerInvariantName or providerFactory must be provided.", nameof(providerInvariantName));
+                }
+                providerInvariantName = GetProviderInvariantNameFromFactory(providerFactory);
             }
 
             ProviderInvariantName = providerInvariantName.Trim();
             ProviderFactory = providerFactory;
             ConnectionString = connectionString;
             TablePrefix = string.IsNullOrWhiteSpace(tablePrefix) ? ExecutionHistoryStoreOptions.DefaultTablePrefix : tablePrefix.Trim();
+        }
+
+        private static string GetProviderInvariantNameFromFactory(DbProviderFactory factory)
+        {
+            ArgumentNullException.ThrowIfNull(factory);
+
+            var factoryType = factory.GetType();
+            var typeName = factoryType.FullName ?? factoryType.Name;
+
+            // Map common factory types to their invariant names
+            if (typeName.Contains("Sqlite", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Microsoft.Data.Sqlite";
+            }
+            if (typeName.Contains("Npgsql", StringComparison.OrdinalIgnoreCase) || 
+                typeName.Contains("Postgres", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Npgsql";
+            }
+            if (typeName.Contains("MySql", StringComparison.OrdinalIgnoreCase))
+            {
+                return "MySqlConnector";
+            }
+            if (typeName.Contains("SqlClient", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Microsoft.Data.SqlClient";
+            }
+            if (typeName.Contains("Oracle", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Oracle.ManagedDataAccess.Client";
+            }
+
+            throw new NotSupportedException($"Cannot infer provider invariant name from factory type '{typeName}'. Please provide providerInvariantName explicitly.");
         }
 
         public static RelationalExecutionHistoryStoreSettings Create(
@@ -45,20 +83,7 @@ namespace Quartz.Plugins.RecentHistory.Impl
             string tablePrefix)
             => new RelationalExecutionHistoryStoreSettings(providerInvariantName, connectionString, providerFactory, tablePrefix);
 
-        public static RelationalExecutionHistoryStoreSettings CreateSqlite(string connectionString, DbProviderFactory providerFactory, string tablePrefix)
-            => Create("Microsoft.Data.Sqlite", connectionString, providerFactory, tablePrefix);
-
-        public static RelationalExecutionHistoryStoreSettings CreatePostgreSql(string connectionString, DbProviderFactory providerFactory, string tablePrefix)
-            => Create("Npgsql", connectionString, providerFactory, tablePrefix);
-
-        public static RelationalExecutionHistoryStoreSettings CreateMySql(string connectionString, DbProviderFactory providerFactory, string tablePrefix)
-            => Create("MySqlConnector", connectionString, providerFactory, tablePrefix);
-
-        public static RelationalExecutionHistoryStoreSettings CreateSqlServer(string connectionString, DbProviderFactory providerFactory, string tablePrefix)
-            => Create("Microsoft.Data.SqlClient", connectionString, providerFactory, tablePrefix);
-
-        public static RelationalExecutionHistoryStoreSettings CreateOracle(string connectionString, DbProviderFactory providerFactory, string tablePrefix)
-            => Create("Oracle.ManagedDataAccess.Client", connectionString, providerFactory, tablePrefix);
+  
     }
 
     [Serializable]
