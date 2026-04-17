@@ -21,11 +21,10 @@ namespace Quartz.Plugins.RecentHistory
         }
 
         public ExecutionHistoryStoreOptions UseAdoProvider(
-            string providerInvariantName,
             string connectionString,
             DbProviderFactory providerFactory = null,
             string tablePrefix = DefaultTablePrefix)
-            => Use(RelationalExecutionHistoryStoreSettings.Create(providerInvariantName, connectionString, providerFactory, tablePrefix));
+            => Use(RelationalExecutionHistoryStoreSettings.Create(connectionString, providerFactory, tablePrefix));
 
         private ExecutionHistoryStoreOptions Use(RelationalExecutionHistoryStoreSettings settings)
         {

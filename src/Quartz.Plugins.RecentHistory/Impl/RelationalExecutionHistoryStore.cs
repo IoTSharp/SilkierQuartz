@@ -17,7 +17,6 @@ namespace Quartz.Plugins.RecentHistory.Impl
         public string TablePrefix { get; }
 
         private RelationalExecutionHistoryStoreSettings(
-            string providerInvariantName,
             string connectionString,
             DbProviderFactory providerFactory,
             string tablePrefix)
@@ -26,18 +25,8 @@ namespace Quartz.Plugins.RecentHistory.Impl
             {
                 throw new ArgumentException("A database connection string is required.", nameof(connectionString));
             }
-
-            // Infer provider invariant name from factory if not provided
-            if (string.IsNullOrWhiteSpace(providerInvariantName))
-            {
-                if (providerFactory == null)
-                {
-                    throw new ArgumentException("Either providerInvariantName or providerFactory must be provided.", nameof(providerInvariantName));
-                }
-                providerInvariantName = GetProviderInvariantNameFromFactory(providerFactory);
-            }
-
-            ProviderInvariantName = providerInvariantName.Trim();
+        
+            ProviderInvariantName = GetProviderInvariantNameFromFactory(providerFactory);
             ProviderFactory = providerFactory;
             ConnectionString = connectionString;
             TablePrefix = string.IsNullOrWhiteSpace(tablePrefix) ? ExecutionHistoryStoreOptions.DefaultTablePrefix : tablePrefix.Trim();
@@ -77,11 +66,10 @@ namespace Quartz.Plugins.RecentHistory.Impl
         }
 
         public static RelationalExecutionHistoryStoreSettings Create(
-            string providerInvariantName,
             string connectionString,
             DbProviderFactory providerFactory,
             string tablePrefix)
-            => new RelationalExecutionHistoryStoreSettings(providerInvariantName, connectionString, providerFactory, tablePrefix);
+            => new RelationalExecutionHistoryStoreSettings( connectionString, providerFactory, tablePrefix);
 
   
     }

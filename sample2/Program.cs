@@ -57,7 +57,7 @@ services.AddSilkierQuartz(options =>
          }
 #endif
             );
-services.AddExecutionHistoryStore(setting => setting.UseSqlServer(connectionString, SqlClientFactory.Instance));
+services.AddExecutionHistoryStore(setting => setting.UseAdoProvider(connectionString, SqlClientFactory.Instance));
 services.AddOptions();
 services.Configure<AppSettings>(configuration);
 services.Configure<InjectProperty>(options => { options.WriteText = "This is inject string"; });

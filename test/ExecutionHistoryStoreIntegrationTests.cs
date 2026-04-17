@@ -24,7 +24,7 @@ namespace SilkierQuartz.Test
             var databaseFile = Path.Combine(Path.GetTempPath(), $"silkierquartz-history-{Guid.NewGuid():N}.db");
             try
             {
-                await AssertStoreBehaviorAsync(options => options.UseSqlite($"Data Source={databaseFile};Mode=ReadWriteCreate;Cache=Shared", SqliteFactory.Instance));
+                await AssertStoreBehaviorAsync(options => options.UseAdoProvider($"Data Source={databaseFile};Mode=ReadWriteCreate;Cache=Shared", SqliteFactory.Instance));
             }
             finally
             {
@@ -48,7 +48,7 @@ namespace SilkierQuartz.Test
                     ["POSTGRES_DB"] = "silkierquartz"
                 },
                 configureStore: (options, host, mappedPort) =>
-                    options.UseAdoProvider("Npgsql", $"Host={host};Port={mappedPort};Database=silkierquartz;Username=postgres;Password=Password123!;Pooling=false", NpgsqlFactory.Instance));
+                    options.UseAdoProvider($"Host={host};Port={mappedPort};Database=silkierquartz;Username=postgres;Password=Password123!;Pooling=false", NpgsqlFactory.Instance));
         }
 
         [Fact(DisplayName = "MySQL execution history store persists and queries history", Timeout = 300000)]
@@ -63,7 +63,7 @@ namespace SilkierQuartz.Test
                     ["MYSQL_DATABASE"] = "silkierquartz"
                 },
                 configureStore: (options, host, mappedPort) =>
-                    options.UseAdoProvider("MySqlConnector", $"Server={host};Port={mappedPort};Database=silkierquartz;User ID=root;Password=Password123!;SslMode=None;AllowPublicKeyRetrieval=True", MySqlConnectorFactory.Instance));
+                    options.UseAdoProvider(  $"Server={host};Port={mappedPort};Database=silkierquartz;User ID=root;Password=Password123!;SslMode=None;AllowPublicKeyRetrieval=True", MySqlConnectorFactory.Instance));
         }
 
         [Fact(DisplayName = "SQL Server execution history store persists and queries history", Timeout = 300000)]
@@ -78,7 +78,7 @@ namespace SilkierQuartz.Test
                     ["MSSQL_SA_PASSWORD"] = "Password123!Aa"
                 },
                 configureStore: (options, host, mappedPort) =>
-                    options.UseAdoProvider("Microsoft.Data.SqlClient", $"Server={host},{mappedPort};Database=master;User ID=sa;Password=Password123!Aa;Encrypt=False;TrustServerCertificate=True", SqlClientFactory.Instance));
+                    options.UseAdoProvider(  $"Server={host},{mappedPort};Database=master;User ID=sa;Password=Password123!Aa;Encrypt=False;TrustServerCertificate=True", SqlClientFactory.Instance));
         }
 
         [Fact(DisplayName = "Oracle execution history store persists and queries history", Timeout = 600000)]
@@ -92,7 +92,7 @@ namespace SilkierQuartz.Test
                     ["ORACLE_PASSWORD"] = "Password123!"
                 },
                 configureStore: (options, host, mappedPort) =>
-                    options.UseAdoProvider("Oracle.ManagedDataAccess.Client", $"User Id=system;Password=Password123!;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={host})(PORT={mappedPort}))(CONNECT_DATA=(SERVICE_NAME=FREEPDB1)))", OracleClientFactory.Instance));
+                    options.UseAdoProvider($"User Id=system;Password=Password123!;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={host})(PORT={mappedPort}))(CONNECT_DATA=(SERVICE_NAME=FREEPDB1)))", OracleClientFactory.Instance));
         }
 
         private static async Task RunContainerStoreTestAsync(
