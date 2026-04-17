@@ -22,8 +22,8 @@ namespace SilkierQuartz
             var scheduler = app.GetScheduler();
             {
                 var jobData = new JobDataMap();
-                jobData.Put("DateFrom", DateTime.Now);
-                jobData.Put("QuartzAssembly", File.ReadAllBytes(typeof(IScheduler).Assembly.Location));
+                jobData["DateFrom"] = DateTime.Now;
+                jobData["QuartzAssembly"] = File.ReadAllBytes(typeof(IScheduler).Assembly.Location);
 
                 var job = JobBuilder.Create<DummyJob>()
                     .WithIdentity("Sales", "REPORTS")
@@ -151,7 +151,7 @@ namespace SilkierQuartz
             {
                 Debug.WriteLine("DisallowConcurrentJob > " + DateTime.Now);
 
-                context.JobDetail.JobDataMap.Put("LastExecuted", DateTime.Now);
+                context.JobDetail.JobDataMap["LastExecuted"] = DateTime.Now;
 
                 await Task.Delay(TimeSpan.FromSeconds(Random.Next(1, 5)));
 

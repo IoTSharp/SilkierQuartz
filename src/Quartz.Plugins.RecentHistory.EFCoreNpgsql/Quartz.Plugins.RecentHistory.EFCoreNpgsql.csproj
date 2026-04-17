@@ -1,0 +1,57 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+        <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+        <GeneratePackageOnBuild Condition="'$(Configuration)' == 'Release'">true</GeneratePackageOnBuild>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>1591</NoWarn>
+        <Version>10.0.0</Version>
+        <Product>SilkierQuartz</Product>
+        <Title>EF Core Npgsql execution history store for SilkierQuartz</Title>
+        <Authors>Jan Lucansky,Maikebing</Authors>
+        <PackageProjectUrl>https://github.com/IoTSharp/SilkierQuartz</PackageProjectUrl>
+        <Description>EF Core Npgsql based execution history store for SilkierQuartz recent job history.</Description>
+        <PackageTags>quartz;recent;history;efcore;npgsql;postgresql</PackageTags>
+        <AssemblyVersion>10.0.0.0</AssemblyVersion>
+        <FileVersion>10.0.0.0</FileVersion>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <Copyright>Copyright © 2018 Jan Lucansky, Copyright © 2024 Maikebing</Copyright>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/IoTSharp/SilkierQuartz</RepositoryUrl>
+        <PackageId>SilkierQuartz.Plugins.RecentHistory.EFCoreNpgsql</PackageId>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IsPackable>true</IsPackable>
+        <Nullable>disable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Quartz.Plugins.RecentHistory\Quartz.Plugins.RecentHistory.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\..\.editorconfig" Link=".editorconfig" />
+        <None Include="..\..\README.md" Pack="true" PackagePath="" Link="README.md" />
+        <None Include="..\..\LICENSE" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.*" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.*" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.*" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.*" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.*" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.*" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.*" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.*" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="*.vspscc" />
+    </ItemGroup>
+
+</Project>

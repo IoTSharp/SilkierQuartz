@@ -6,6 +6,6 @@ namespace SilkierQuartz.Example
 {
     public class InjectProperty
     {
-        public string WriteText { get; set; }
+        public string WriteText { get; set; } = string.Empty;
     }
 }

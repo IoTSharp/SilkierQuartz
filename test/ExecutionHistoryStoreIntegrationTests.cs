@@ -101,8 +101,7 @@ namespace SilkierQuartz.Test
             IReadOnlyDictionary<string, string> environment,
             Action<ExecutionHistoryStoreOptions, string, ushort> configureStore)
         {
-            var builder = new ContainerBuilder()
-                .WithImage(image)
+            var builder = new ContainerBuilder(image)
                 .WithCleanUp(true)
                 .WithPortBinding(port, true)
                 .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(port));
