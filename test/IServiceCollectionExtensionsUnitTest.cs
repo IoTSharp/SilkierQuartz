@@ -86,7 +86,6 @@ namespace SilkierQuartz.Test
                 IServiceCollection serviceCollection = new ServiceCollection();
                 serviceCollection.AddExecutionHistoryStore(setting =>
                     setting.UseAdoProvider(
-                        "Microsoft.Data.Sqlite",
                         $"Data Source={databaseFile};Mode=ReadWriteCreate;Cache=Shared",
                         SqliteFactory.Instance));
 
