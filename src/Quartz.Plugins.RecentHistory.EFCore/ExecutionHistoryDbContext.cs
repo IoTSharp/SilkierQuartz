@@ -7,7 +7,7 @@ namespace Quartz.Plugins.RecentHistory.EFCore
     /// <summary>
     /// EF Core database context for SilkierQuartz execution history data.
     /// </summary>
-    public class ExecutionHistoryDbContext : DbContext
+    public partial class ExecutionHistoryDbContext : DbContext
     {
         internal const string DefaultTablePrefix = ExecutionHistoryStoreOptions.DefaultTablePrefix;
 
@@ -55,42 +55,6 @@ namespace Quartz.Plugins.RecentHistory.EFCore
                 entity.Property(x => x.TotalJobsExecuted).HasColumnName("total_jobs_executed").IsRequired();
                 entity.Property(x => x.TotalJobsFailed).HasColumnName("total_jobs_failed").IsRequired();
             });
-        }
-
-        internal sealed class ExecutionHistoryRow
-        {
-            public long Id { get; set; }
-
-            public string FireInstanceId { get; set; }
-
-            public string SchedulerInstanceId { get; set; }
-
-            public string SchedulerName { get; set; }
-
-            public string JobName { get; set; }
-
-            public string TriggerName { get; set; }
-
-            public string ScheduledFireTimeUtc { get; set; }
-
-            public string ActualFireTimeUtc { get; set; }
-
-            public bool Recovering { get; set; }
-
-            public bool Vetoed { get; set; }
-
-            public string FinishedTimeUtc { get; set; }
-
-            public string ExceptionMessage { get; set; }
-        }
-
-        internal sealed class JobStatsRow
-        {
-            public int Id { get; set; }
-
-            public int TotalJobsExecuted { get; set; }
-
-            public int TotalJobsFailed { get; set; }
         }
     }
 }

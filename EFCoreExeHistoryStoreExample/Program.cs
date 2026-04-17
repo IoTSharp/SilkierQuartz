@@ -1,7 +1,6 @@
 using EFCoreExeHistoryStoreExample.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Quartz.Plugins.RecentHistory.EFCore;
 
 namespace EFCoreExeHistoryStoreExample
 {
@@ -14,7 +13,7 @@ namespace EFCoreExeHistoryStoreExample
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString,o=>o.MigrationsAssembly("Quartz.Plugins.RecentHistory.EFCore")));
+                options.UseSqlServer(connectionString, o => o.MigrationsAssembly("Quartz.Plugins.RecentHistory.EFCore")));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
