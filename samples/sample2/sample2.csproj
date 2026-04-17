@@ -19,8 +19,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\src\Quartz.Plugins.RecentHistory\Quartz.Plugins.RecentHistory.csproj" />
-		<ProjectReference Include="..\src\SilkierQuartz\SilkierQuartz.csproj" />
+	  <ProjectReference Include="..\..\src\Quartz.Plugins.RecentHistory\Quartz.Plugins.RecentHistory.csproj" />
+	  <ProjectReference Include="..\..\src\SilkierQuartz\SilkierQuartz.csproj" />
 	</ItemGroup>
 
 </Project>
