@@ -1,9 +1,6 @@
-
-
-[![SilkierQuartz](https://img.shields.io/nuget/v/SilkierQuartz.svg)](https://www.nuget.org/packages/SilkierQuartz/) ![Nuget](https://img.shields.io/nuget/dt/SilkierQuartz) 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![.NET Core](https://github.com/maikebing/SilkierQuartz/workflows/.NET%20Core/badge.svg?branch=master)](https://github.com/IoTSharp/SilkierQuartz/actions/workflows/dotnet-core.yml)
 [![Build status](https://ci.appveyor.com/api/projects/status/0ojmooqvycks11kw?svg=true)](https://ci.appveyor.com/project/MaiKeBing/silkierquartz)
-![.NET Core](https://github.com/maikebing/SilkierQuartz/workflows/.NET%20Core/badge.svg?branch=master)
 
 SilkierQuartz is a new after merging  [Quartzmin](https://github.com/jlucansky/Quartzmin) and  [QuartzHostedService](https://github.com/mukmyash/QuartzHostedService)!
 
@@ -25,6 +22,23 @@ SilkierQuartz can be used within your existing application with minimum effort a
 The goal of this project is to provide convenient tool to utilize most of the functionality that Quartz.NET enables. The biggest challenge was to create a simple yet effective editor of job data map which is heart of Quartz.NET. Every job data map item is strongly typed and SilkierQuartz can be easily extended with a custom editor for your specific type beside standard supported types such as String, Integer, DateTime and so on. 
 
 SilkierQuartz was created with **Semantic UI** and **Handlebars.Net** as the template engine.
+
+## Packages
+
+| Package | Description | Version | Downloads |
+| --- | --- | --- | --- |
+| [SilkierQuartz](https://www.nuget.org/packages/SilkierQuartz/) | Main web UI package for Quartz.NET management, including dashboard, job editing, trigger management, and execution monitoring. | [![NuGet version](https://img.shields.io/nuget/v/SilkierQuartz.svg)](https://www.nuget.org/packages/SilkierQuartz/) | [![NuGet downloads](https://img.shields.io/nuget/dt/SilkierQuartz.svg)](https://www.nuget.org/packages/SilkierQuartz/) |
+| [SilkierQuartz.Plugins.RecentHistory](https://www.nuget.org/packages/SilkierQuartz.Plugins.RecentHistory/) | Core recent-history plugin that records execution history and supports centralized relational persistence through the provider-agnostic registration API. | [![NuGet version](https://img.shields.io/nuget/v/SilkierQuartz.Plugins.RecentHistory.svg)](https://www.nuget.org/packages/SilkierQuartz.Plugins.RecentHistory/) | [![NuGet downloads](https://img.shields.io/nuget/dt/SilkierQuartz.Plugins.RecentHistory.svg)](https://www.nuget.org/packages/SilkierQuartz.Plugins.RecentHistory/) |
+| [SilkierQuartz.Plugins.RecentHistory.EFCoreSqlServer](https://www.nuget.org/packages/SilkierQuartz.Plugins.RecentHistory.EFCoreSqlServer/) | EF Core SQL Server history store package with ready-to-use `AddEfCoreExecutionHistoryStore(...)` registration for Microsoft SQL Server deployments. | [![NuGet version](https://img.shields.io/nuget/v/SilkierQuartz.Plugins.RecentHistory.EFCoreSqlServer.svg)](https://www.nuget.org/packages/SilkierQuartz.Plugins.RecentHistory.EFCoreSqlServer/) | [![NuGet downloads](https://img.shields.io/nuget/dt/SilkierQuartz.Plugins.RecentHistory.EFCoreSqlServer.svg)](https://www.nuget.org/packages/SilkierQuartz.Plugins.RecentHistory.EFCoreSqlServer/) |
+| [SilkierQuartz.Plugins.RecentHistory.EFCoreNpgsql](https://www.nuget.org/packages/SilkierQuartz.Plugins.RecentHistory.EFCoreNpgsql/) | EF Core PostgreSQL history store package for teams using Npgsql and wanting the same execution-history behavior on PostgreSQL. | [![NuGet version](https://img.shields.io/nuget/v/SilkierQuartz.Plugins.RecentHistory.EFCoreNpgsql.svg)](https://www.nuget.org/packages/SilkierQuartz.Plugins.RecentHistory.EFCoreNpgsql/) | [![NuGet downloads](https://img.shields.io/nuget/dt/SilkierQuartz.Plugins.RecentHistory.EFCoreNpgsql.svg)](https://www.nuget.org/packages/SilkierQuartz.Plugins.RecentHistory.EFCoreNpgsql/) |
+| [SilkierQuartz.Plugins.RecentHistory.EFCoreSqlite](https://www.nuget.org/packages/SilkierQuartz.Plugins.RecentHistory.EFCoreSqlite/) | EF Core SQLite history store package for lightweight or embedded deployments that want persistent recent job history. | [![NuGet version](https://img.shields.io/nuget/v/SilkierQuartz.Plugins.RecentHistory.EFCoreSqlite.svg)](https://www.nuget.org/packages/SilkierQuartz.Plugins.RecentHistory.EFCoreSqlite/) | [![NuGet downloads](https://img.shields.io/nuget/dt/SilkierQuartz.Plugins.RecentHistory.EFCoreSqlite.svg)](https://www.nuget.org/packages/SilkierQuartz.Plugins.RecentHistory.EFCoreSqlite/) |
+| [SilkierQuartz.Plugins.RecentHistory.EFCoreMySql](https://www.nuget.org/packages/SilkierQuartz.Plugins.RecentHistory.EFCoreMySql/) | EF Core MySQL history store package for MySQL-compatible deployments using the Pomelo provider. | [![NuGet version](https://img.shields.io/nuget/v/SilkierQuartz.Plugins.RecentHistory.EFCoreMySql.svg)](https://www.nuget.org/packages/SilkierQuartz.Plugins.RecentHistory.EFCoreMySql/) | [![NuGet downloads](https://img.shields.io/nuget/dt/SilkierQuartz.Plugins.RecentHistory.EFCoreMySql.svg)](https://www.nuget.org/packages/SilkierQuartz.Plugins.RecentHistory.EFCoreMySql/) |
+
+Choose the package that matches your storage model:
+
+- `SilkierQuartz` for the web dashboard.
+- `SilkierQuartz.Plugins.RecentHistory` for the core recent-history plugin and provider-agnostic relational registration.
+- One EF Core provider package when you want recent history persisted with SQL Server, PostgreSQL, SQLite, or MySQL.
 
 ##  SilkierQuartz's Features
   -  automatically discover IJob subclasses with SilkierQuartzAttribute
@@ -54,6 +68,15 @@ SilkierQuartz is available on [nuget.org](https://www.nuget.org/packages/Silkier
 To install SilkierQuartz, run the following command in the Package Manager Console
 ```powershell
 PM> Install-Package SilkierQuartz
+```
+
+To persist recent execution history with EF Core, install the matching provider package:
+
+```powershell
+PM> Install-Package SilkierQuartz.Plugins.RecentHistory.EFCoreSqlServer
+PM> Install-Package SilkierQuartz.Plugins.RecentHistory.EFCoreNpgsql
+PM> Install-Package SilkierQuartz.Plugins.RecentHistory.EFCoreSqlite
+PM> Install-Package SilkierQuartz.Plugins.RecentHistory.EFCoreMySql
 ```
 
   

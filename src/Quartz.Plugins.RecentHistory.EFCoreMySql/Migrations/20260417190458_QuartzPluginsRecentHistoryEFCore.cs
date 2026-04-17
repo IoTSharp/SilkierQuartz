@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
-using Pomelo.EntityFrameworkCore.MySql.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 

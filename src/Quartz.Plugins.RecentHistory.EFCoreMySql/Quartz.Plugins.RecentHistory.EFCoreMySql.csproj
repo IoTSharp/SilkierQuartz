@@ -44,9 +44,9 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.*" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.*" />
-        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.*" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.*" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.*" />
+        <PackageReference Include="Microting.EntityFrameworkCore.MySql" Version="10.*" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.*" />
     </ItemGroup>
 
