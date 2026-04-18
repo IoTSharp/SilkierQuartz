@@ -1,6 +1,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/IoTSharp/SilkierQuartz/ci.yml)
-[![NuGet version](https://img.shields.io/nuget/v/SilkierQuartz.svg)SilkierQuartz](https://www.nuget.org/packages/SilkierQuartz/)
+[![NuGet version](https://img.shields.io/nuget/v/SilkierQuartz.svg)](https://www.nuget.org/packages/SilkierQuartz/)
  
 
 SilkierQuartz is a new after merging  [Quartzmin](https://github.com/jlucansky/Quartzmin) and  [QuartzHostedService](https://github.com/mukmyash/QuartzHostedService)!
