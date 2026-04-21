@@ -27,23 +27,31 @@ namespace SilkierQuartz.Authorization
                 return Task.CompletedTask;
             }
 
-            if (!context.User.Identity.IsAuthenticated &&
-                options.AccessRequirement == SilkierQuartzAuthenticationOptions.SimpleAccessRequirement.AllowOnlyAuthenticated)
+            if (!context.User.Identity.IsAuthenticated)
             {
                 context.Fail();
 
                 return Task.CompletedTask;
             }
 
-            if (!context.User.HasClaim(options.SilkierQuartzClaim, options.SilkierQuartzClaimValue) &&
-                options.AccessRequirement == SilkierQuartzAuthenticationOptions.SimpleAccessRequirement.AllowOnlyUsersWithClaim)
+            if (options.AccessRequirement == SilkierQuartzAuthenticationOptions.SimpleAccessRequirement.AllowOnlyAuthenticated)
             {
-                context.Fail();
+                context.Succeed(requirement);
 
                 return Task.CompletedTask;
             }
 
-            context.Succeed(requirement);
+            if (options.AccessRequirement == SilkierQuartzAuthenticationOptions.SimpleAccessRequirement.AllowOnlyUsersWithClaim)
+            {
+                if (context.User.HasClaim(options.SilkierQuartzClaim, options.SilkierQuartzClaimValue))
+                    context.Succeed(requirement);
+                else
+                    context.Fail();
+
+                return Task.CompletedTask;
+            }
+
+            context.Fail();
 
             return Task.CompletedTask;
         }
