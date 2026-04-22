@@ -65,7 +65,7 @@ namespace SilkierQuartz.Controllers
 
         private bool IsUserAuthenticated()
         {
-            if (HttpContext.User == null || !HttpContext.User.Identity.IsAuthenticated)
+            if (HttpContext.User?.Identity?.IsAuthenticated != true)
                 return false;
 
             if (authenticationOptions.AccessRequirement == SilkierQuartzAuthenticationOptions.SimpleAccessRequirement.AllowOnlyAuthenticated)
