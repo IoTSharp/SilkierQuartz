@@ -51,8 +51,7 @@ namespace SilkierQuartz.Controllers
             }
             else
             {
-                if (HttpContext.User == null || !HttpContext.User.Identity.IsAuthenticated ||
-                    !HttpContext.User.HasClaim(authenticationOptions.SilkierQuartzClaim, authenticationOptions.SilkierQuartzClaimValue))
+                if (!IsUserAuthenticated())
                 {
                     ViewBag.IsLoginError = false;
                     return View(new AuthenticateViewModel());
@@ -61,6 +60,25 @@ namespace SilkierQuartz.Controllers
                 {
                     return RedirectToAction(nameof(SchedulerController.Index), nameof(Scheduler));
                 }
+            }
+        }
+
+        private bool IsUserAuthenticated()
+        {
+            switch (authenticationOptions.AccessRequirement)
+            {
+                case SilkierQuartzAuthenticationOptions.SimpleAccessRequirement.AllowAnonymous:
+                    return true;
+
+                case SilkierQuartzAuthenticationOptions.SimpleAccessRequirement.AllowOnlyAuthenticated:
+                    return HttpContext.User?.Identity?.IsAuthenticated == true;
+
+                case SilkierQuartzAuthenticationOptions.SimpleAccessRequirement.AllowOnlyUsersWithClaim:
+                    return HttpContext.User?.Identity?.IsAuthenticated == true
+                        && HttpContext.User.HasClaim(authenticationOptions.SilkierQuartzClaim, authenticationOptions.SilkierQuartzClaimValue);
+
+                default:
+                    return false;
             }
         }
 
