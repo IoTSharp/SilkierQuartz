@@ -65,13 +65,21 @@ namespace SilkierQuartz.Controllers
 
         private bool IsUserAuthenticated()
         {
-            if (HttpContext.User?.Identity?.IsAuthenticated != true)
-                return false;
+            switch (authenticationOptions.AccessRequirement)
+            {
+                case SilkierQuartzAuthenticationOptions.SimpleAccessRequirement.AllowAnonymous:
+                    return true;
 
-            if (authenticationOptions.AccessRequirement == SilkierQuartzAuthenticationOptions.SimpleAccessRequirement.AllowOnlyAuthenticated)
-                return true;
+                case SilkierQuartzAuthenticationOptions.SimpleAccessRequirement.AllowOnlyAuthenticated:
+                    return HttpContext.User?.Identity?.IsAuthenticated == true;
 
-            return HttpContext.User.HasClaim(authenticationOptions.SilkierQuartzClaim, authenticationOptions.SilkierQuartzClaimValue);
+                case SilkierQuartzAuthenticationOptions.SimpleAccessRequirement.AllowOnlyUsersWithClaim:
+                    return HttpContext.User?.Identity?.IsAuthenticated == true
+                        && HttpContext.User.HasClaim(authenticationOptions.SilkierQuartzClaim, authenticationOptions.SilkierQuartzClaimValue);
+
+                default:
+                    return false;
+            }
         }
 
         [HttpPost]

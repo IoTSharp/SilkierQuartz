@@ -27,7 +27,7 @@ namespace SilkierQuartz.Authorization
                 return Task.CompletedTask;
             }
 
-            if (!context.User.Identity.IsAuthenticated)
+            if (context.User?.Identity?.IsAuthenticated != true)
             {
                 context.Fail();
 
